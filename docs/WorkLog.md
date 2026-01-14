@@ -38,18 +38,38 @@
   - Theme.kt: Material3 GanbyeongTheme
   - MainActivity에 테마 적용 및 테스트
 
+- [x] **Issue #5**: 공통 컴포넌트 개발
+  - GanbyeongButton.kt: 높이 56dp, 로딩 상태 지원
+  - GanbyeongTextField.kt: 에러 메시지 표시 지원
+  - Preview 추가 (다양한 상태 확인)
+
+- [x] **Issue #6**: Navigation 구조 설정
+  - Screen.kt: 5개 화면 경로 정의
+  - NavGraph.kt: Navigation 구조 및 임시 화면
+  - Splash → RoleSelection → CareRequest/CaregiverRegistration → Result 플로우
+
+- [x] **Issue #13**: Koin 의존성 주입 설정
+  - AppModule.kt: Firebase Firestore 등록
+  - GanbyeongApplication.kt: Koin 초기화
+  - AndroidManifest.xml: Application 클래스 지정
+  - Logcat에서 Koin 초기화 확인
+
 #### 문서 작성
 - [x] PRD.md (프로젝트 기획서)
 - [x] TechnicalDesign.md (기술 설계서)
 - [x] ScreenDesign.md (화면 설계서)
 - [x] DevelopmentGuide.md (개발 가이드)
 - [x] DevelopmentRoadmap.md (개발 로드맵)
+- [x] WorkLog.md (작업 일지)
 
 ### 📝 배운 것
 - Git 브랜치 전략 (feature → develop → main)
 - GitHub PR 머지 후 로컬 동기화 (`git pull origin develop`)
 - .gitignore로 민감한 파일 제외
 - Material3 테마 시스템
+- Compose Navigation 구조
+- Koin 의존성 주입 설정
+- GitHub CLI로 이슈 등록 (`gh issue create`)
 
 ### ⚠️ 이슈 및 해결
 - **문제**: google-services.json이 Git에 추가됨
@@ -61,32 +81,34 @@
 - **문제**: GitHub PR 머지 후 로컬에 반영 안 됨
   - **해결**: `git pull origin develop`로 최신 상태 가져오기
 
+- **문제**: GitHub 이슈 수동 등록이 번거로움
+  - **해결**: GitHub CLI (`gh issue create`) 사용
+
 ---
 
 ## 🎯 다음 작업 (2026-01-15 예정)
 
-### 2단계: 기반 구축 (계속)
+### 3단계: 화면 개발
 
-#### Issue #5: 공통 컴포넌트 개발 (예상 1시간)
-- [ ] GanbyeongButton.kt 생성
-  - 큰 버튼 (높이 56dp)
-  - 로딩 상태 지원
-  - Preview 포함
-  
-- [ ] GanbyeongTextField.kt 생성
-  - 큰 입력 필드
-  - 에러 메시지 표시
-  - Preview 포함
+#### SplashScreen 개발
+- [ ] 실제 스플래시 화면 구현
+- [ ] 로고 및 애니메이션 추가
 
-#### Issue #6: Navigation 구조 설정 (예상 30분)
-- [ ] Screen.kt 생성 (화면 경로 정의)
-- [ ] NavGraph.kt 생성 (Navigation 구조)
-- [ ] MainActivity에 NavGraph 적용
+#### RoleSelectionScreen 개발
+- [ ] 역할 선택 UI 구현
+- [ ] 보호자/간병사 버튼 디자인
 
-#### Issue #7: Koin 설정 (예상 30분)
-- [ ] AppModule.kt 생성
-- [ ] GanbyeongApplication.kt 생성
-- [ ] AndroidManifest.xml 수정
+#### CareRequestScreen 개발
+- [ ] 간병 신청 폼 구현
+- [ ] 입력 필드 및 유효성 검사
+
+#### CaregiverRegistrationScreen 개발
+- [ ] 간병사 등록 폼 구현
+- [ ] 입력 필드 및 유효성 검사
+
+#### ResultScreen 개발
+- [ ] 결과 화면 UI 구현
+- [ ] 역할별 메시지 표시
 
 ---
 
@@ -94,14 +116,14 @@
 
 ### 전체 로드맵 (5단계)
 - ✅ 1단계: 프로젝트 초기 설정 (100%)
-- 🔄 2단계: 기반 구축 (25% - 테마만 완료)
+- ✅ 2단계: 기반 구축 (100%)
 - ⏳ 3단계: 화면 개발 (0%)
 - ⏳ 4단계: 데이터 레이어 (0%)
 - ⏳ 5단계: 테스트 및 배포 (0%)
 
 ### GitHub Issues
-- ✅ Closed: #1, #2, #3, #4
-- 📝 To Create: #5, #6, #7
+- ✅ Closed: #1, #2, #3, #4, #5, #6, #13
+- 📝 Next: 3단계 화면 개발
 
 ---
 
@@ -110,14 +132,14 @@
 ### 프로젝트 구조
 ```
 com.ezlevup.ganbyeong24/
-├── di/                          # Koin 모듈
+├── di/                          # ✅ Koin 모듈
 ├── data/
 │   ├── model/                   # CareRequest, Caregiver
 │   └── repository/              # Repository
 ├── presentation/
 │   ├── theme/                   # ✅ Color, Type, Theme
-│   ├── components/              # 다음: Button, TextField
-│   ├── navigation/              # 다음: Screen, NavGraph
+│   ├── components/              # ✅ Button, TextField
+│   ├── navigation/              # ✅ Screen, NavGraph
 │   └── screens/
 │       ├── splash/
 │       ├── role/
@@ -142,6 +164,9 @@ git push origin feature/작업명
 # GitHub PR 머지 후
 git checkout develop
 git pull origin develop
+
+# GitHub 이슈 등록
+gh issue create --title "제목" --body-file issue.md --label "label"
 ```
 
 ### 참고 문서
@@ -162,4 +187,4 @@ docs/WorkLog.md 파일 확인해줘.
 
 ---
 
-**마지막 업데이트**: 2026-01-14 19:40
+**마지막 업데이트**: 2026-01-14 21:45
