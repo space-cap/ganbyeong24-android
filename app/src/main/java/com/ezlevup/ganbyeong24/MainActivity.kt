@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen
-import com.ezlevup.ganbyeong24.presentation.splash.SplashScreen
+import com.ezlevup.ganbyeong24.presentation.screens.splash.SplashScreen
 import com.ezlevup.ganbyeong24.ui.theme.Ganbyeong24Theme
 
 class MainActivity : ComponentActivity() {
