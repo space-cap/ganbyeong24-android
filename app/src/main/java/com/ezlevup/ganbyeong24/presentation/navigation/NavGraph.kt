@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.ezlevup.ganbyeong24.presentation.screens.splash.SplashScreen
 import kotlinx.coroutines.delay
 
 /**
@@ -26,7 +27,7 @@ fun GanbyeongNavGraph(navController: NavHostController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.Splash.route) {
         // 스플래시 화면
         composable(Screen.Splash.route) {
-            SplashScreenPlaceholder(
+            SplashScreen(
                     onNavigateToRoleSelection = {
                         navController.navigate(Screen.RoleSelection.route) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
