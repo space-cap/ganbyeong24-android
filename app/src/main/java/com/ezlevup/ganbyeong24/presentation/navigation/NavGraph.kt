@@ -12,12 +12,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.ezlevup.ganbyeong24.data.repository.AuthRepository
+import com.ezlevup.ganbyeong24.presentation.screens.auth.LoginScreen
+import com.ezlevup.ganbyeong24.presentation.screens.auth.SignupScreen
 import com.ezlevup.ganbyeong24.presentation.screens.care_request.CareRequestScreen
 import com.ezlevup.ganbyeong24.presentation.screens.caregiver.CaregiverRegistrationScreen
 import com.ezlevup.ganbyeong24.presentation.screens.result.ResultScreen
 import com.ezlevup.ganbyeong24.presentation.screens.role.RoleSelectionScreen
 import com.ezlevup.ganbyeong24.presentation.screens.splash.SplashScreen
 import kotlinx.coroutines.delay
+import org.koin.compose.koinInject
 
 /**
  * 앱의 Navigation Graph
@@ -27,16 +31,51 @@ import kotlinx.coroutines.delay
  * @param navController Navigation을 제어하는 NavHostController
  */
 @Composable
-fun GanbyeongNavGraph(navController: NavHostController = rememberNavController()) {
+fun GanbyeongNavGraph(
+        navController: NavHostController = rememberNavController(),
+        authRepository: AuthRepository = koinInject()
+) {
     NavHost(navController = navController, startDestination = Screen.Splash.route) {
         // 스플래시 화면
         composable(Screen.Splash.route) {
+            val isLoggedIn = authRepository.isLoggedIn()
+
             SplashScreen(
                     onNavigateToRoleSelection = {
-                        navController.navigate(Screen.RoleSelection.route) {
+                        val destination =
+                                if (isLoggedIn) {
+                                    Screen.RoleSelection.route
+                                } else {
+                                    Screen.Login.route
+                                }
+                        navController.navigate(destination) {
                             popUpTo(Screen.Splash.route) { inclusive = true }
                         }
                     }
+            )
+        }
+
+        // 로그인 화면
+        composable(Screen.Login.route) {
+            LoginScreen(
+                    onLoginSuccess = {
+                        navController.navigate(Screen.RoleSelection.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    },
+                    onNavigateToSignup = { navController.navigate(Screen.Signup.route) }
+            )
+        }
+
+        // 회원가입 화면
+        composable(Screen.Signup.route) {
+            SignupScreen(
+                    onSignupSuccess = {
+                        navController.navigate(Screen.RoleSelection.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    },
+                    onNavigateBack = { navController.popBackStack() }
             )
         }
 
