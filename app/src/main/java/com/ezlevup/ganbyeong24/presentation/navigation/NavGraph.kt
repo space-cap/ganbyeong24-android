@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ezlevup.ganbyeong24.presentation.screens.care_request.CareRequestScreen
 import com.ezlevup.ganbyeong24.presentation.screens.caregiver.CaregiverRegistrationScreen
+import com.ezlevup.ganbyeong24.presentation.screens.result.ResultScreen
 import com.ezlevup.ganbyeong24.presentation.screens.role.RoleSelectionScreen
 import com.ezlevup.ganbyeong24.presentation.screens.splash.SplashScreen
 import kotlinx.coroutines.delay
@@ -79,9 +80,9 @@ fun GanbyeongNavGraph(navController: NavHostController = rememberNavController()
                 arguments = listOf(navArgument("userRole") { type = NavType.StringType })
         ) { backStackEntry ->
             val userRole = backStackEntry.arguments?.getString("userRole") ?: "unknown"
-            ResultScreenPlaceholder(
+            ResultScreen(
                     userRole = userRole,
-                    onFinish = {
+                    onConfirm = {
                         navController.navigate(Screen.RoleSelection.route) {
                             popUpTo(Screen.RoleSelection.route) { inclusive = true }
                         }
