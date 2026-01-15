@@ -86,29 +86,67 @@
 
 ---
 
-## 🎯 다음 작업 (2026-01-15 예정)
+## 📅 2026-01-15 (Day 2)
 
-### 3단계: 화면 개발
+### ✅ 완료한 작업
 
-#### SplashScreen 개발
-- [ ] 실제 스플래시 화면 구현
-- [ ] 로고 및 애니메이션 추가
+#### 3단계: 화면 개발 (진행 중)
+
+- [x] **Issue #15**: SplashScreen 개발 - 앱 시작 화면 구현
+  - GitHub 이슈 등록 (#15)
+  - feature/splash-screen 브랜치 생성
+  - SplashScreen.kt 구현
+    - 배경 이미지 적용 (ic_background.jpg)
+    - "간병24" 텍스트 표시 (32sp, Bold, 흰색)
+    - 페이드인 애니메이션 효과 (0.8초)
+    - LaunchedEffect로 2초 딜레이 후 자동 이동
+    - 로딩 인디케이터 (CircularProgressIndicator)
+    - 버전 정보 표시 (v1.0.0)
+  - NavGraph.kt 업데이트
+    - SplashScreen import 추가
+    - SplashScreenPlaceholder를 실제 SplashScreen으로 교체
+  - 빌드 및 실행 테스트 성공
+
+### 📝 배운 것
+- AI 이미지 생성 및 Android 리소스 추가
+- Compose 애니메이션 (Animatable, tween)
+- Image Composable과 ContentScale 사용
+- 투명 배경 이미지 처리
+- 배경 이미지 위에 콘텐츠 레이어링
+
+### ⚠️ 이슈 및 해결
+- **문제**: AI 생성 로고 이미지에 투명 배경이 포함되어 격자 무늬 표시
+  - **시도**: 흰색 배경 로고 생성 → 배경 이미지와 어울리지 않음
+  - **시도**: 투명 배경 로고 재생성 → 여전히 격자 무늬 표시
+  - **해결**: 로고 이미지를 주석 처리하고 나중에 추가하기로 결정
+  - **교훈**: 프리뷰와 실제 실행 환경의 차이 이해 필요
+
+### 🚧 진행 중인 작업
+- SplashScreen 마무리
+  - [ ] 로고 이미지 추가 (나중에)
+  - [ ] Git commit & push
+  - [ ] PR 생성 및 머지
+
+---
+
+## 🎯 다음 작업 (2026-01-15 오후 예정)
+
+### 3단계: 화면 개발 (계속)
+
+#### SplashScreen 마무리
+- [ ] Git commit & push
+- [ ] PR 생성 (`feature/splash-screen` → `develop`)
+- [ ] PR 머지 및 브랜치 정리
 
 #### RoleSelectionScreen 개발
+- [ ] GitHub 이슈 등록
+- [ ] feature/role-selection 브랜치 생성
 - [ ] 역할 선택 UI 구현
 - [ ] 보호자/간병사 버튼 디자인
 
-#### CareRequestScreen 개발
+#### CareRequestScreen 개발 (시간 되면)
 - [ ] 간병 신청 폼 구현
 - [ ] 입력 필드 및 유효성 검사
-
-#### CaregiverRegistrationScreen 개발
-- [ ] 간병사 등록 폼 구현
-- [ ] 입력 필드 및 유효성 검사
-
-#### ResultScreen 개발
-- [ ] 결과 화면 UI 구현
-- [ ] 역할별 메시지 표시
 
 ---
 
@@ -117,13 +155,14 @@
 ### 전체 로드맵 (5단계)
 - ✅ 1단계: 프로젝트 초기 설정 (100%)
 - ✅ 2단계: 기반 구축 (100%)
-- ⏳ 3단계: 화면 개발 (0%)
+- 🚧 3단계: 화면 개발 (20% - SplashScreen 완료)
 - ⏳ 4단계: 데이터 레이어 (0%)
 - ⏳ 5단계: 테스트 및 배포 (0%)
 
 ### GitHub Issues
 - ✅ Closed: #1, #2, #3, #4, #5, #6, #13
-- 📝 Next: 3단계 화면 개발
+- � In Progress: #15 (SplashScreen)
+- �📝 Next: RoleSelectionScreen, CareRequestScreen
 
 ---
 
@@ -141,7 +180,7 @@ com.ezlevup.ganbyeong24/
 │   ├── components/              # ✅ Button, TextField
 │   ├── navigation/              # ✅ Screen, NavGraph
 │   └── screens/
-│       ├── splash/
+│       ├── splash/              # ✅ SplashScreen (완료)
 │       ├── role/
 │       ├── care_request/
 │       ├── caregiver/
@@ -166,7 +205,19 @@ git checkout develop
 git pull origin develop
 
 # GitHub 이슈 등록
-gh issue create --title "제목" --body-file issue.md --label "label"
+gh issue create --title "제목" --body-file issue.md
+```
+
+### SplashScreen Git 커밋 메시지 (참고)
+```bash
+git commit -m "feat: SplashScreen 구현 (#15)
+
+- 배경 이미지 적용 (ic_background.jpg)
+- 페이드인 애니메이션 효과 구현 (0.8초)
+- 2초 후 자동으로 역할 선택 화면으로 이동
+- NavGraph에 실제 SplashScreen 연동
+- 로딩 인디케이터 및 버전 정보 표시
+- 로고 이미지는 나중에 추가 예정 (TODO)"
 ```
 
 ### 참고 문서
@@ -187,4 +238,5 @@ docs/WorkLog.md 파일 확인해줘.
 
 ---
 
-**마지막 업데이트**: 2026-01-14 21:45
+**마지막 업데이트**: 2026-01-15 13:47
+
