@@ -152,6 +152,37 @@
 - Compose Button 커스터마이징 (높이, 모양, 색상)
 - 네비게이션 콜백 파라미터 명명 규칙
 - ScreenDesign.md 명세를 따른 구현
+- Firestore 데이터 저장 및 조회
+- Repository 패턴 구현
+- ViewModel 유효성 검사 로직
+- Koin 의존성 주입 (Repository, ViewModel)
+
+#### CareRequestScreen 개발
+- [x] **Issue #19**: CareRequestScreen 구현 - 간병 신청 화면
+  - GitHub 이슈 등록 (#19)
+  - feature/care-request 브랜치 생성
+  - 데이터 레이어 구현
+    - CareRequest 데이터 모델 생성
+    - CareRequestRepository 인터페이스 및 구현체
+    - Firestore 연동 (care_requests 컬렉션)
+  - Presentation 레이어 구현
+    - CareRequestState 데이터 클래스
+    - CareRequestViewModel (StateFlow, 유효성 검사)
+  - UI 레이어 구현
+    - CareRequestScreen.kt (8개 입력 필드)
+    - TopAppBar 및 뒤로가기 기능
+    - 유효성 검사 에러 메시지 표시
+    - 로딩 상태 처리
+    - 에러 다이얼로그
+  - Koin 모듈 업데이트
+    - CareRequestRepository 등록
+    - CareRequestViewModel 등록
+  - NavGraph.kt 업데이트
+    - CareRequestScreenPlaceholder → 실제 화면 교체
+  - 빌드 및 실행 테스트 성공
+  - Firestore 저장 테스트 성공
+  - Git commit & push 완료
+  - PR 생성 및 머지 완료 (`feature/care-request` → `develop`)
 
 ---
 
@@ -159,25 +190,25 @@
 
 ### 3단계: 화면 개발 (계속)
 
-#### CareRequestScreen 개발 (다음 작업)
+#### CaregiverRegistrationScreen 개발 (다음 작업)
 - [ ] GitHub 이슈 등록
-- [ ] feature/care-request 브랜치 생성
-- [ ] CareRequestScreen.kt 구현
-  - [ ] 환자명 입력 필드
-  - [ ] 보호자명 입력 필드
-  - [ ] 환자 상태 드롭다운
-  - [ ] 간병 기간 선택
-  - [ ] 위치 입력 필드
-  - [ ] 연락처 입력 필드
-  - [ ] 유효성 검사
-- [ ] CareRequestViewModel 구현
+- [ ] feature/caregiver-registration 브랜치 생성
+- [ ] 데이터 레이어 구현
+  - [ ] Caregiver 데이터 모델
+  - [ ] CaregiverRepository
+- [ ] Presentation 레이어 구현
+  - [ ] CaregiverState
+  - [ ] CaregiverViewModel
+- [ ] UI 레이어 구현
+  - [ ] CaregiverRegistrationScreen.kt
+  - [ ] 입력 필드 및 유효성 검사
 - [ ] 빌드 및 테스트
 - [ ] Git commit & push
 - [ ] PR 생성 및 머지
 
-#### CaregiverRegistrationScreen 개발 (시간 되면)
-- [ ] 간병사 등록 폼 구현
-- [ ] 입력 필드 및 유효성 검사
+#### ResultScreen 개발 (시간 되면)
+- [ ] 완료 화면 구현
+- [ ] 역할별 메시지 표시
 
 ---
 
@@ -186,13 +217,13 @@
 ### 전체 로드맵 (5단계)
 - ✅ 1단계: 프로젝트 초기 설정 (100%)
 - ✅ 2단계: 기반 구축 (100%)
-- 🚧 3단계: 화면 개발 (40% - SplashScreen, RoleSelectionScreen 완료)
+- 🚧 3단계: 화면 개발 (60% - SplashScreen, RoleSelectionScreen, CareRequestScreen 완료)
 - ⏳ 4단계: 데이터 레이어 (0%)
 - ⏳ 5단계: 테스트 및 배포 (0%)
 
 ### GitHub Issues
-- ✅ Closed: #1, #2, #3, #4, #5, #6, #13, #15, #17
-- 📝 Next: CareRequestScreen, CaregiverRegistrationScreen
+- ✅ Closed: #1, #2, #3, #4, #5, #6, #13, #15, #17, #19
+- 📝 Next: CaregiverRegistrationScreen, ResultScreen
 
 ---
 
@@ -201,10 +232,10 @@
 ### 프로젝트 구조
 ```
 com.ezlevup.ganbyeong24/
-├── di/                          # ✅ Koin 모듈
+├── di/                          # ✅ Koin 모듈 (Repository, ViewModel)
 ├── data/
-│   ├── model/                   # CareRequest, Caregiver
-│   └── repository/              # Repository
+│   ├── model/                   # ✅ CareRequest
+│   └── repository/              # ✅ CareRequestRepository
 ├── presentation/
 │   ├── theme/                   # ✅ Color, Type, Theme
 │   ├── components/              # ✅ Button, TextField
@@ -212,7 +243,7 @@ com.ezlevup.ganbyeong24/
 │   └── screens/
 │       ├── splash/              # ✅ SplashScreen (완료)
 │       ├── role/                # ✅ RoleSelectionScreen (완료)
-│       ├── care_request/
+│       ├── care_request/        # ✅ CareRequestScreen (완료)
 │       ├── caregiver/
 │       └── result/
 └── util/
@@ -268,5 +299,5 @@ docs/WorkLog.md 파일 확인해줘.
 
 ---
 
-**마지막 업데이트**: 2026-01-15 14:34
+**마지막 업데이트**: 2026-01-15 15:57
 
