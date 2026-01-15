@@ -277,18 +277,174 @@ com.ezlevup.ganbyeong24/
 ├── di/                          # ✅ Koin 모듈 (Repository, ViewModel)
 ├── data/
 │   ├── model/                   # ✅ CareRequest, Caregiver
-│   └── repository/              # ✅ CareRequestRepository, CaregiverRepository
+│   └── repository/              # ✅ CareRequestRepository, CaregiverRepository, AuthRepository
 ├── presentation/
 │   ├── theme/                   # ✅ Color, Type, Theme
 │   ├── components/              # ✅ Button, TextField
 │   ├── navigation/              # ✅ Screen, NavGraph
 │   └── screens/
+│       ├── auth/                # ✅ LoginScreen, SignupScreen (완료)
 │       ├── splash/              # ✅ SplashScreen (완료)
 │       ├── role/                # ✅ RoleSelectionScreen (완료)
 │       ├── care_request/        # ✅ CareRequestScreen (완료)
 │       ├── caregiver/           # ✅ CaregiverRegistrationScreen (완료)
-│       └── result/
+│       └── result/              # ✅ ResultScreen (완료)
 └── util/
+```
+
+## 📊 4단계: Firebase Authentication 구현 (2026-01-15)
+
+### ✅ 완료 내용
+
+#### Firebase 설정
+- Firebase Console에서 Authentication 활성화 (이메일/비밀번호)
+- `build.gradle.kts`에 `firebase-auth-ktx` 의존성 추가
+
+#### 데이터 레이어
+- **CareRequest.kt**: `userId` 필드 추가
+- **Caregiver.kt**: `userId` 필드 추가
+- **AuthRepository.kt**: 인증 Repository 인터페이스
+- **AuthRepositoryImpl.kt**: Firebase Authentication 구현
+  - `login()`: 이메일/비밀번호 로그인
+  - `signup()`: 회원가입
+  - `logout()`: 로그아웃
+  - `getCurrentUserId()`: 현재 사용자 ID 조회
+  - `isLoggedIn()`: 로그인 상태 확인
+
+#### Presentation 레이어
+- **LoginState.kt**: 로그인 화면 상태
+- **LoginViewModel.kt**: 로그인 비즈니스 로직
+  - 이메일/비밀번호 유효성 검사
+  - 로그인 처리
+- **SignupState.kt**: 회원가입 화면 상태
+- **SignupViewModel.kt**: 회원가입 비즈니스 로직
+  - 이메일/비밀번호/비밀번호확인 유효성 검사
+  - 회원가입 처리
+
+#### UI 레이어
+- **LoginScreen.kt**: 로그인 화면
+  - 이메일/비밀번호 입력
+  - 로그인 버튼
+  - 회원가입 링크
+  - 에러 다이얼로그
+- **SignupScreen.kt**: 회원가입 화면
+  - 이메일/비밀번호/비밀번호확인 입력
+  - 회원가입 버튼
+  - TopAppBar with 뒤로가기
+  - 에러 다이얼로그
+
+#### Navigation
+- **Screen.kt**: Login, Signup 화면 추가
+- **NavGraph.kt**: 인증 흐름 통합
+  - SplashScreen에서 로그인 상태 확인
+  - 로그인 안 됨 → LoginScreen
+  - 로그인 됨 → RoleSelectionScreen
+  - LoginScreen → SignupScreen
+  - 로그인/회원가입 성공 → RoleSelectionScreen
+
+#### Koin DI
+- **AppModule.kt** 업데이트
+  - `FirebaseAuth` 인스턴스 등록
+  - `AuthRepository` 등록
+  - `LoginViewModel`, `SignupViewModel` 등록
+  - `CareRequestViewModel`, `CaregiverRegistrationViewModel`에 `AuthRepository` 주입
+
+#### 기존 코드 수정
+- **CareRequestViewModel.kt**: `userId` 자동 추가
+- **CaregiverRegistrationViewModel.kt**: `userId` 자동 추가
+
+#### 테스트
+- ✅ 빌드 성공
+- ✅ 회원가입 테스트 성공
+- ✅ 로그인 테스트 성공
+- ✅ 데이터 저장 시 userId 확인 (Firestore)
+- ✅ 로그인 상태 유지 확인
+
+#### GitHub
+- **Issue #26**: Firebase Authentication 구현
+- **PR**: feature/firebase-auth → develop (머지 완료)
+
+### 📝 작업 체크리스트
+
+#### 0단계: 준비
+- [x] GitHub 이슈 등록 (#26)
+- [x] feature/firebase-auth 브랜치 생성
+
+#### 1단계: Firebase 설정
+- [x] Firebase Console에서 Authentication 활성화
+- [x] build.gradle.kts에 firebase-auth 의존성 추가
+- [x] 빌드 확인
+
+#### 2단계: 데이터 모델 업데이트
+- [x] CareRequest에 userId 필드 추가
+- [x] Caregiver에 userId 필드 추가
+
+#### 3단계: Repository 구현
+- [x] AuthRepository 인터페이스 생성
+- [x] AuthRepositoryImpl 구현
+- [x] 로그인, 회원가입, 로그아웃, 현재 사용자 확인
+
+#### 4단계: ViewModel 구현
+- [x] LoginState, LoginViewModel
+- [x] SignupState, SignupViewModel
+
+#### 5단계: UI 구현
+- [x] LoginScreen.kt 생성
+- [x] SignupScreen.kt 생성
+- [x] Navigation 업데이트
+
+#### 6단계: 기존 코드 수정
+- [x] CareRequestViewModel에서 userId 자동 추가
+- [x] CaregiverRegistrationViewModel에서 userId 자동 추가
+- [x] Koin 모듈 업데이트
+
+#### 7단계: 테스트
+- [x] 빌드 테스트
+- [x] 회원가입 테스트
+- [x] 로그인 테스트
+- [x] 데이터 저장 시 userId 확인
+
+#### 8단계: 마무리
+- [x] Git commit & push
+- [x] PR 생성 및 머지
+- [x] 문서 업데이트
+
+---
+
+## 📂 프로젝트 구조 (최종)
+
+```
+app/src/main/java/com/ezlevup/ganbyeong24/
+├── data/
+│   ├── model/
+│   │   ├── CareRequest.kt       # ✅ userId 추가
+│   │   └── Caregiver.kt         # ✅ userId 추가
+│   └── repository/
+│       ├── AuthRepository.kt              # ✅ 인증 인터페이스
+│       ├── AuthRepositoryImpl.kt          # ✅ Firebase Auth 구현
+│       ├── CareRequestRepository.kt       # ✅
+│       ├── CareRequestRepositoryImpl.kt   # ✅
+│       ├── CaregiverRepository.kt         # ✅
+│       └── CaregiverRepositoryImpl.kt     # ✅
+├── presentation/
+│   ├── theme/                   # ✅ Color, Type, Theme
+│   ├── components/              # ✅ Button, TextField
+│   ├── navigation/              # ✅ Screen, NavGraph
+│   └── screens/
+│       ├── auth/                # ✅ 인증 화면
+│       │   ├── LoginScreen.kt
+│       │   ├── LoginState.kt
+│       │   ├── LoginViewModel.kt
+│       │   ├── SignupScreen.kt
+│       │   ├── SignupState.kt
+│       │   └── SignupViewModel.kt
+│       ├── splash/              # ✅ SplashScreen
+│       ├── role/                # ✅ RoleSelectionScreen
+│       ├── care_request/        # ✅ CareRequestScreen
+│       ├── caregiver/           # ✅ CaregiverRegistrationScreen
+│       └── result/              # ✅ ResultScreen
+└── di/
+    └── AppModule.kt             # ✅ Koin DI 설정
 ```
 
 ### 중요 명령어
@@ -341,5 +497,5 @@ docs/WorkLog.md 파일 확인해줘.
 
 ---
 
-**마지막 업데이트**: 2026-01-15 18:01
+**마지막 업데이트**: 2026-01-15 19:57
 
