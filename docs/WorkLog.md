@@ -121,28 +121,33 @@
   - **해결**: 로고 이미지를 주석 처리하고 나중에 추가하기로 결정
   - **교훈**: 프리뷰와 실제 실행 환경의 차이 이해 필요
 
-### 🚧 진행 중인 작업
-- SplashScreen 마무리
-  - [ ] 로고 이미지 추가 (나중에)
-  - [ ] Git commit & push
-  - [ ] PR 생성 및 머지
+### ✅ 완료한 작업 (추가)
+
+#### SplashScreen 마무리
+- [x] **Issue #15 완료**: SplashScreen 개발 완료
+  - Git commit & push 완료
+  - PR 생성 및 머지 완료 (`feature/splash-screen` → `develop`)
+  - 브랜치 정리 완료
+  - 빌드 및 실행 테스트 성공
 
 ---
 
-## 🎯 다음 작업 (2026-01-15 오후 예정)
+## 🎯 다음 작업 (2026-01-15 오후)
 
 ### 3단계: 화면 개발 (계속)
 
-#### SplashScreen 마무리
-- [ ] Git commit & push
-- [ ] PR 생성 (`feature/splash-screen` → `develop`)
-- [ ] PR 머지 및 브랜치 정리
-
-#### RoleSelectionScreen 개발
-- [ ] GitHub 이슈 등록
+#### RoleSelectionScreen 개발 (다음 작업)
+- [ ] GitHub 이슈 등록 (#16 예정)
 - [ ] feature/role-selection 브랜치 생성
-- [ ] 역할 선택 UI 구현
-- [ ] 보호자/간병사 버튼 디자인
+- [ ] RoleSelectionScreen.kt 구현
+  - [ ] "보호자" 버튼 (간병 신청)
+  - [ ] "간병사" 버튼 (간병사 등록)
+  - [ ] 버튼 디자인 및 아이콘
+  - [ ] 네비게이션 연결
+- [ ] NavGraph 업데이트
+- [ ] 빌드 및 테스트
+- [ ] Git commit & push
+- [ ] PR 생성 및 머지
 
 #### CareRequestScreen 개발 (시간 되면)
 - [ ] 간병 신청 폼 구현
@@ -155,14 +160,13 @@
 ### 전체 로드맵 (5단계)
 - ✅ 1단계: 프로젝트 초기 설정 (100%)
 - ✅ 2단계: 기반 구축 (100%)
-- 🚧 3단계: 화면 개발 (20% - SplashScreen 완료)
+- 🚧 3단계: 화면 개발 (20% - SplashScreen 완료, RoleSelectionScreen 준비 중)
 - ⏳ 4단계: 데이터 레이어 (0%)
 - ⏳ 5단계: 테스트 및 배포 (0%)
 
 ### GitHub Issues
-- ✅ Closed: #1, #2, #3, #4, #5, #6, #13
-- � In Progress: #15 (SplashScreen)
-- �📝 Next: RoleSelectionScreen, CareRequestScreen
+- ✅ Closed: #1, #2, #3, #4, #5, #6, #13, #15
+- 📝 Next: #16 (RoleSelectionScreen), CareRequestScreen
 
 ---
 
@@ -238,5 +242,5 @@ docs/WorkLog.md 파일 확인해줘.
 
 ---
 
-**마지막 업데이트**: 2026-01-15 13:47
+**마지막 업데이트**: 2026-01-15 14:13
 

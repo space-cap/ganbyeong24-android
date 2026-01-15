@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.ezlevup.ganbyeong24.presentation.screens.role.RoleSelectionScreen
 import com.ezlevup.ganbyeong24.presentation.screens.splash.SplashScreen
 import kotlinx.coroutines.delay
 
@@ -38,9 +39,9 @@ fun GanbyeongNavGraph(navController: NavHostController = rememberNavController()
 
         // 역할 선택 화면
         composable(Screen.RoleSelection.route) {
-            RoleSelectionScreenPlaceholder(
-                    onGuardianClick = { navController.navigate(Screen.CareRequest.route) },
-                    onCaregiverClick = {
+            RoleSelectionScreen(
+                    onGuardianSelected = { navController.navigate(Screen.CareRequest.route) },
+                    onCaregiverSelected = {
                         navController.navigate(Screen.CaregiverRegistration.route)
                     }
             )
