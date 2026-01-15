@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.ezlevup.ganbyeong24.presentation.screens.care_request.CareRequestScreen
 import com.ezlevup.ganbyeong24.presentation.screens.role.RoleSelectionScreen
 import com.ezlevup.ganbyeong24.presentation.screens.splash.SplashScreen
 import kotlinx.coroutines.delay
@@ -49,8 +50,9 @@ fun GanbyeongNavGraph(navController: NavHostController = rememberNavController()
 
         // 간병 신청 화면
         composable(Screen.CareRequest.route) {
-            CareRequestScreenPlaceholder(
-                    onSubmitSuccess = {
+            CareRequestScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onSuccess = {
                         navController.navigate(Screen.Result.createRoute("guardian")) {
                             popUpTo(Screen.RoleSelection.route)
                         }

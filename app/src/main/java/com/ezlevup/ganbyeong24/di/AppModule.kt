@@ -1,6 +1,10 @@
 package com.ezlevup.ganbyeong24.di
 
+import com.ezlevup.ganbyeong24.data.repository.CareRequestRepository
+import com.ezlevup.ganbyeong24.data.repository.CareRequestRepositoryImpl
+import com.ezlevup.ganbyeong24.presentation.screens.care_request.CareRequestViewModel
 import com.google.firebase.firestore.FirebaseFirestore
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 /**
@@ -13,11 +17,13 @@ val appModule = module {
     // Firebase Firestore 인스턴스
     single { FirebaseFirestore.getInstance() }
 
-    // TODO: Repository 추가 (4단계에서 구현)
-    // single<CareRequestRepository> { CareRequestRepositoryImpl(get()) }
+    // Repository
+    single<CareRequestRepository> { CareRequestRepositoryImpl(get()) }
+    // TODO: CaregiverRepository 추가 (나중에 구현)
     // single<CaregiverRepository> { CaregiverRepositoryImpl(get()) }
 
-    // TODO: ViewModel 추가 (4단계에서 구현)
-    // viewModel { CareRequestViewModel(get()) }
+    // ViewModel
+    viewModel { CareRequestViewModel(get()) }
+    // TODO: CaregiverViewModel 추가 (나중에 구현)
     // viewModel { CaregiverViewModel(get()) }
 }
