@@ -130,27 +130,53 @@
   - 브랜치 정리 완료
   - 빌드 및 실행 테스트 성공
 
+#### RoleSelectionScreen 개발
+- [x] **Issue #17**: RoleSelectionScreen 구현 - 역할 선택 화면
+  - GitHub 이슈 등록 (#17)
+  - feature/role-selection 브랜치 생성
+  - RoleSelectionScreen.kt 구현
+    - 제목: "간병24에 오신 것을 환영합니다"
+    - 설명: "원하시는 서비스를 선택해주세요"
+    - "간병이 필요해요" 버튼 (하트 아이콘)
+    - "간병사로 등록할게요" 버튼 (사람 아이콘)
+    - 시니어 친화적 큰 버튼 (높이 80dp)
+  - NavGraph.kt 업데이트
+    - RoleSelectionScreen import 추가
+    - RoleSelectionScreenPlaceholder를 실제 RoleSelectionScreen으로 교체
+  - 빌드 및 실행 테스트 성공
+  - Git commit & push 완료
+  - PR 생성 및 머지 완료 (`feature/role-selection` → `develop`)
+
+### 📝 배운 것 (추가)
+- Material Icons 사용 (Favorite, Person)
+- Compose Button 커스터마이징 (높이, 모양, 색상)
+- 네비게이션 콜백 파라미터 명명 규칙
+- ScreenDesign.md 명세를 따른 구현
+
 ---
 
 ## 🎯 다음 작업 (2026-01-15 오후)
 
 ### 3단계: 화면 개발 (계속)
 
-#### RoleSelectionScreen 개발 (다음 작업)
-- [ ] GitHub 이슈 등록 (#16 예정)
-- [ ] feature/role-selection 브랜치 생성
-- [ ] RoleSelectionScreen.kt 구현
-  - [ ] "보호자" 버튼 (간병 신청)
-  - [ ] "간병사" 버튼 (간병사 등록)
-  - [ ] 버튼 디자인 및 아이콘
-  - [ ] 네비게이션 연결
-- [ ] NavGraph 업데이트
+#### CareRequestScreen 개발 (다음 작업)
+- [ ] GitHub 이슈 등록
+- [ ] feature/care-request 브랜치 생성
+- [ ] CareRequestScreen.kt 구현
+  - [ ] 환자명 입력 필드
+  - [ ] 보호자명 입력 필드
+  - [ ] 환자 상태 드롭다운
+  - [ ] 간병 기간 선택
+  - [ ] 위치 입력 필드
+  - [ ] 연락처 입력 필드
+  - [ ] 유효성 검사
+- [ ] CareRequestViewModel 구현
 - [ ] 빌드 및 테스트
 - [ ] Git commit & push
 - [ ] PR 생성 및 머지
 
-#### CareRequestScreen 개발 (시간 되면)
-- [ ] 간병 신청 폼 구현
+#### CaregiverRegistrationScreen 개발 (시간 되면)
+- [ ] 간병사 등록 폼 구현
 - [ ] 입력 필드 및 유효성 검사
 
 ---
@@ -160,13 +186,13 @@
 ### 전체 로드맵 (5단계)
 - ✅ 1단계: 프로젝트 초기 설정 (100%)
 - ✅ 2단계: 기반 구축 (100%)
-- 🚧 3단계: 화면 개발 (20% - SplashScreen 완료, RoleSelectionScreen 준비 중)
+- 🚧 3단계: 화면 개발 (40% - SplashScreen, RoleSelectionScreen 완료)
 - ⏳ 4단계: 데이터 레이어 (0%)
 - ⏳ 5단계: 테스트 및 배포 (0%)
 
 ### GitHub Issues
-- ✅ Closed: #1, #2, #3, #4, #5, #6, #13, #15
-- 📝 Next: #16 (RoleSelectionScreen), CareRequestScreen
+- ✅ Closed: #1, #2, #3, #4, #5, #6, #13, #15, #17
+- 📝 Next: CareRequestScreen, CaregiverRegistrationScreen
 
 ---
 
@@ -185,7 +211,7 @@ com.ezlevup.ganbyeong24/
 │   ├── navigation/              # ✅ Screen, NavGraph
 │   └── screens/
 │       ├── splash/              # ✅ SplashScreen (완료)
-│       ├── role/
+│       ├── role/                # ✅ RoleSelectionScreen (완료)
 │       ├── care_request/
 │       ├── caregiver/
 │       └── result/
@@ -242,5 +268,5 @@ docs/WorkLog.md 파일 확인해줘.
 
 ---
 
-**마지막 업데이트**: 2026-01-15 14:13
+**마지막 업데이트**: 2026-01-15 14:34
 
