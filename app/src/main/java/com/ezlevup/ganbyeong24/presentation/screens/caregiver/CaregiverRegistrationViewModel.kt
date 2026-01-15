@@ -3,6 +3,7 @@ package com.ezlevup.ganbyeong24.presentation.screens.caregiver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ezlevup.ganbyeong24.data.model.Caregiver
+import com.ezlevup.ganbyeong24.data.repository.AuthRepository
 import com.ezlevup.ganbyeong24.data.repository.CaregiverRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,8 +17,12 @@ import kotlinx.coroutines.launch
  * 간병사 등록 화면의 비즈니스 로직을 담당합니다.
  *
  * @property repository 간병사 Repository
+ * @property authRepository 인증 Repository
  */
-class CaregiverRegistrationViewModel(private val repository: CaregiverRepository) : ViewModel() {
+class CaregiverRegistrationViewModel(
+        private val repository: CaregiverRepository,
+        private val authRepository: AuthRepository
+) : ViewModel() {
 
     private val _state = MutableStateFlow(CaregiverRegistrationState())
     val state: StateFlow<CaregiverRegistrationState> = _state.asStateFlow()
@@ -53,8 +58,11 @@ class CaregiverRegistrationViewModel(private val repository: CaregiverRepository
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
+            val userId = authRepository.getCurrentUserId() ?: throw Exception("로그인이 필요합니다")
+
             val caregiver =
                     Caregiver(
+                            userId = userId,
                             name = _state.value.name,
                             experience = _state.value.experience,
                             certificates = _state.value.certificates,

@@ -3,6 +3,7 @@ package com.ezlevup.ganbyeong24.presentation.screens.care_request
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ezlevup.ganbyeong24.data.model.CareRequest
+import com.ezlevup.ganbyeong24.data.repository.AuthRepository
 import com.ezlevup.ganbyeong24.data.repository.CareRequestRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,8 +17,12 @@ import kotlinx.coroutines.launch
  * 간병 신청 화면의 비즈니스 로직을 담당합니다.
  *
  * @property repository 간병 신청 Repository
+ * @property authRepository 인증 Repository
  */
-class CareRequestViewModel(private val repository: CareRequestRepository) : ViewModel() {
+class CareRequestViewModel(
+        private val repository: CareRequestRepository,
+        private val authRepository: AuthRepository
+) : ViewModel() {
 
     private val _state = MutableStateFlow(CareRequestState())
     val state: StateFlow<CareRequestState> = _state.asStateFlow()
@@ -67,8 +72,11 @@ class CareRequestViewModel(private val repository: CareRequestRepository) : View
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
+            val userId = authRepository.getCurrentUserId() ?: throw Exception("로그인이 필요합니다")
+
             val request =
                     CareRequest(
+                            userId = userId,
                             patientName = _state.value.patientName,
                             guardianName = _state.value.guardianName,
                             patientCondition = _state.value.patientCondition,

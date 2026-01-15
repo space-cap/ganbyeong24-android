@@ -9,6 +9,12 @@ sealed class Screen(val route: String) {
     /** 스플래시 화면 앱 시작 시 2초간 표시되는 인트로 화면 */
     object Splash : Screen("splash")
 
+    /** 로그인 화면 사용자 인증을 위한 로그인 화면 */
+    object Login : Screen("login")
+
+    /** 회원가입 화면 새로운 계정을 생성하는 화면 */
+    object Signup : Screen("signup")
+
     /** 역할 선택 화면 사용자가 보호자 또는 간병사 역할을 선택하는 화면 */
     object RoleSelection : Screen("role_selection")
 

@@ -8,6 +8,7 @@ import com.google.firebase.Timestamp
  * Firestore에 저장되는 간병 신청 정보를 나타냅니다.
  *
  * @property id Firestore 문서 ID
+ * @property userId 사용자 ID (Firebase Auth)
  * @property patientName 환자명
  * @property guardianName 보호자명
  * @property patientCondition 환자 상태
@@ -21,6 +22,7 @@ import com.google.firebase.Timestamp
  */
 data class CareRequest(
         val id: String = "",
+        val userId: String = "",
         val patientName: String = "",
         val guardianName: String = "",
         val patientCondition: String = "",
