@@ -8,6 +8,7 @@ import com.google.firebase.Timestamp
  * Firestore에 저장되는 간병사 정보를 나타냅니다.
  *
  * @property id Firestore 문서 ID
+ * @property userId 사용자 ID (Firebase Auth)
  * @property name 이름
  * @property experience 경력
  * @property certificates 자격증
@@ -18,6 +19,7 @@ import com.google.firebase.Timestamp
  */
 data class Caregiver(
         val id: String = "",
+        val userId: String = "",
         val name: String = "",
         val experience: String = "",
         val certificates: String = "",
