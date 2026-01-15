@@ -2,7 +2,10 @@ package com.ezlevup.ganbyeong24.di
 
 import com.ezlevup.ganbyeong24.data.repository.CareRequestRepository
 import com.ezlevup.ganbyeong24.data.repository.CareRequestRepositoryImpl
+import com.ezlevup.ganbyeong24.data.repository.CaregiverRepository
+import com.ezlevup.ganbyeong24.data.repository.CaregiverRepositoryImpl
 import com.ezlevup.ganbyeong24.presentation.screens.care_request.CareRequestViewModel
+import com.ezlevup.ganbyeong24.presentation.screens.caregiver.CaregiverRegistrationViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -19,11 +22,9 @@ val appModule = module {
 
     // Repository
     single<CareRequestRepository> { CareRequestRepositoryImpl(get()) }
-    // TODO: CaregiverRepository 추가 (나중에 구현)
-    // single<CaregiverRepository> { CaregiverRepositoryImpl(get()) }
+    single<CaregiverRepository> { CaregiverRepositoryImpl(get()) }
 
     // ViewModel
     viewModel { CareRequestViewModel(get()) }
-    // TODO: CaregiverViewModel 추가 (나중에 구현)
-    // viewModel { CaregiverViewModel(get()) }
+    viewModel { CaregiverRegistrationViewModel(get()) }
 }
