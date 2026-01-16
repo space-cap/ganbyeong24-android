@@ -98,13 +98,15 @@ class CareRequestViewModel(
     }
 
     fun onPatientPhoneNumberChange(phoneNumber: String) {
-        _state.update { it.copy(patientPhoneNumber = phoneNumber) }
+        // 숫자만 추출하여 저장 (VisualTransformation이 포맷팅 담당)
+        val digitsOnly = phoneNumber.filter { it.isDigit() }.take(11)
+        _state.update { it.copy(patientPhoneNumber = digitsOnly) }
     }
 
     fun onGuardianPhoneNumberChange(phoneNumber: String) {
-        _state.update {
-            it.copy(guardianPhoneNumber = phoneNumber, guardianPhoneNumberError = null)
-        }
+        // 숫자만 추출하여 저장 (VisualTransformation이 포맷팅 담당)
+        val digitsOnly = phoneNumber.filter { it.isDigit() }.take(11)
+        _state.update { it.copy(guardianPhoneNumber = digitsOnly, guardianPhoneNumberError = null) }
     }
 
     // ========== 신청 처리 ==========

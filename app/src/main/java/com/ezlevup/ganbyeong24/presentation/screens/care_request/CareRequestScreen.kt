@@ -22,6 +22,7 @@ import com.ezlevup.ganbyeong24.presentation.components.LocationSelector
 import com.ezlevup.ganbyeong24.presentation.components.PatientConditionSelector
 import com.ezlevup.ganbyeong24.presentation.components.StepIndicator
 import com.ezlevup.ganbyeong24.presentation.theme.GanbyeongTheme
+import com.ezlevup.ganbyeong24.util.PhoneNumberVisualTransformation
 import org.koin.androidx.compose.koinViewModel
 
 /**
@@ -288,6 +289,7 @@ private fun Step3Content(
                         isError = state.guardianPhoneNumberError != null,
                         errorMessage = state.guardianPhoneNumberError,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                        visualTransformation = PhoneNumberVisualTransformation(),
                         textStyle = LocalTextStyle.current.copy(fontSize = 20.sp)
                 )
 
@@ -308,6 +310,7 @@ private fun Step3Content(
                         label = "환자 연락처 (선택)",
                         placeholder = "010-9876-5432",
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                        visualTransformation = PhoneNumberVisualTransformation(),
                         textStyle = LocalTextStyle.current.copy(fontSize = 20.sp)
                 )
         }
