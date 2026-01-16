@@ -66,7 +66,7 @@ private fun ConditionButton(
 ) {
     OutlinedCard(
             onClick = onClick,
-            modifier = modifier.fillMaxWidth().height(80.dp),
+            modifier = modifier.fillMaxWidth().height(100.dp),
             shape = RoundedCornerShape(12.dp),
             colors =
                     CardDefaults.outlinedCardColors(
