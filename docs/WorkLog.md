@@ -497,5 +497,28 @@ docs/WorkLog.md 파일 확인해줘.
 
 ---
 
-**마지막 업데이트**: 2026-01-15 19:57
+**마지막 업데이트**: 2026-01-15 20:09
+
+---
+
+## 📝 다음 작업
+
+### 5단계: 데이터 레이어 개선
+
+#### 간병 신청 목록 화면 (CareRequestListScreen)
+- [ ] Repository에 사용자별 조회 함수 추가
+  - `getMyRequests(userId: String): Flow<List<CareRequest>>`
+  - Firestore Snapshot Listener 사용
+- [ ] CareRequestListState 데이터 클래스
+- [ ] CareRequestListViewModel 구현
+- [ ] CareRequestListScreen UI 구현
+  - LazyColumn으로 목록 표시
+  - 신청 상태별 색상 구분
+  - 새로고침 기능
+- [ ] Navigation 통합
+  - RoleSelectionScreen에 "내 신청 목록" 버튼 추가
+  - Screen.kt에 CareRequestList 추가
+- [ ] 테스트
+  - 빌드 테스트
+  - 실행 테스트 (목록 조회, 실시간 업데이트)
 
