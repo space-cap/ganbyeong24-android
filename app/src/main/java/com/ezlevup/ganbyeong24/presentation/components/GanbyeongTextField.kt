@@ -27,6 +27,7 @@ import com.ezlevup.ganbyeong24.presentation.theme.GanbyeongTheme
  * @param visualTransformation 입력 값 변환 (예: 비밀번호 마스킹)
  * @param singleLine 한 줄 입력 여부 (기본값: true)
  * @param maxLines 최대 줄 수 (기본값: 1)
+ * @param textStyle 텍스트 스타일 (기본값: MaterialTheme.typography.bodyLarge)
  */
 @Composable
 fun GanbyeongTextField(
@@ -40,87 +41,88 @@ fun GanbyeongTextField(
         keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
         visualTransformation: VisualTransformation = VisualTransformation.None,
         singleLine: Boolean = true,
-        maxLines: Int = 1
+        maxLines: Int = 1,
+        textStyle: androidx.compose.ui.text.TextStyle = MaterialTheme.typography.bodyLarge
 ) {
-    Column(modifier = modifier) {
-        OutlinedTextField(
-                value = value,
-                onValueChange = onValueChange,
-                label = { Text(text = label, style = MaterialTheme.typography.bodyLarge) },
-                placeholder = {
-                    Text(text = placeholder, style = MaterialTheme.typography.bodyLarge)
-                },
-                modifier = Modifier.fillMaxWidth(),
-                isError = isError,
-                keyboardOptions = keyboardOptions,
-                visualTransformation = visualTransformation,
-                singleLine = singleLine,
-                maxLines = maxLines,
-                textStyle = MaterialTheme.typography.bodyLarge,
-                shape = RoundedCornerShape(8.dp),
-                colors =
-                        OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                                errorBorderColor = MaterialTheme.colorScheme.error
-                        )
-        )
+        Column(modifier = modifier) {
+                OutlinedTextField(
+                        value = value,
+                        onValueChange = onValueChange,
+                        label = { Text(text = label, style = MaterialTheme.typography.bodyLarge) },
+                        placeholder = {
+                                Text(text = placeholder, style = MaterialTheme.typography.bodyLarge)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        isError = isError,
+                        keyboardOptions = keyboardOptions,
+                        visualTransformation = visualTransformation,
+                        singleLine = singleLine,
+                        maxLines = maxLines,
+                        textStyle = textStyle,
+                        shape = RoundedCornerShape(8.dp),
+                        colors =
+                                OutlinedTextFieldDefaults.colors(
+                                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                        errorBorderColor = MaterialTheme.colorScheme.error
+                                )
+                )
 
-        // 에러 메시지 표시
-        if (isError && errorMessage != null) {
-            Text(
-                    text = errorMessage,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = 16.dp, top = 4.dp)
-            )
+                // 에러 메시지 표시
+                if (isError && errorMessage != null) {
+                        Text(
+                                text = errorMessage,
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                        )
+                }
         }
-    }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun GanbyeongTextFieldPreview() {
-    GanbyeongTheme {
-        Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            // 일반 입력 필드
-            GanbyeongTextField(
-                    value = "",
-                    onValueChange = {},
-                    label = "환자명 *",
-                    placeholder = "예: 홍길동"
-            )
+        GanbyeongTheme {
+                Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                        // 일반 입력 필드
+                        GanbyeongTextField(
+                                value = "",
+                                onValueChange = {},
+                                label = "환자명 *",
+                                placeholder = "예: 홍길동"
+                        )
 
-            // 입력된 상태
-            GanbyeongTextField(
-                    value = "홍길동",
-                    onValueChange = {},
-                    label = "환자명 *",
-                    placeholder = "예: 홍길동"
-            )
+                        // 입력된 상태
+                        GanbyeongTextField(
+                                value = "홍길동",
+                                onValueChange = {},
+                                label = "환자명 *",
+                                placeholder = "예: 홍길동"
+                        )
 
-            // 에러 상태
-            GanbyeongTextField(
-                    value = "홍",
-                    onValueChange = {},
-                    label = "환자명 *",
-                    placeholder = "예: 홍길동",
-                    isError = true,
-                    errorMessage = "환자명은 2자 이상 입력해주세요"
-            )
+                        // 에러 상태
+                        GanbyeongTextField(
+                                value = "홍",
+                                onValueChange = {},
+                                label = "환자명 *",
+                                placeholder = "예: 홍길동",
+                                isError = true,
+                                errorMessage = "환자명은 2자 이상 입력해주세요"
+                        )
 
-            // 여러 줄 입력
-            GanbyeongTextField(
-                    value = "당뇨병 환자입니다.\n혈압 관리가 필요합니다.",
-                    onValueChange = {},
-                    label = "환자 상태",
-                    placeholder = "환자의 상태를 입력해주세요",
-                    singleLine = false,
-                    maxLines = 4
-            )
+                        // 여러 줄 입력
+                        GanbyeongTextField(
+                                value = "당뇨병 환자입니다.\n혈압 관리가 필요합니다.",
+                                onValueChange = {},
+                                label = "환자 상태",
+                                placeholder = "환자의 상태를 입력해주세요",
+                                singleLine = false,
+                                maxLines = 4
+                        )
+                }
         }
-    }
 }

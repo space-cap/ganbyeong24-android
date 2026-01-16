@@ -5,6 +5,7 @@ package com.ezlevup.ganbyeong24.presentation.screens.care_request
  *
  * 화면의 모든 상태를 관리하는 데이터 클래스입니다.
  *
+ * @property currentStep 현재 단계 (1: 환자 정보, 2: 간병 기간, 3: 연락처 및 위치)
  * @property isLoading 로딩 상태
  * @property isSuccess 신청 성공 여부
  * @property errorMessage 에러 메시지
@@ -25,6 +26,7 @@ package com.ezlevup.ganbyeong24.presentation.screens.care_request
  * @property guardianPhoneNumberError 보호자 연락처 에러 메시지
  */
 data class CareRequestState(
+        val currentStep: Int = 1,
         val isLoading: Boolean = false,
         val isSuccess: Boolean = false,
         val errorMessage: String? = null,

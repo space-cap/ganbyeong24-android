@@ -27,6 +27,20 @@ class CareRequestViewModel(
     private val _state = MutableStateFlow(CareRequestState())
     val state: StateFlow<CareRequestState> = _state.asStateFlow()
 
+    // ========== 단계 네비게이션 ==========
+
+    /** 다음 단계로 이동합니다. */
+    fun nextStep() {
+        if (validateCurrentStep()) {
+            _state.update { it.copy(currentStep = (it.currentStep + 1).coerceAtMost(3)) }
+        }
+    }
+
+    /** 이전 단계로 이동합니다. */
+    fun previousStep() {
+        _state.update { it.copy(currentStep = (it.currentStep - 1).coerceAtLeast(1)) }
+    }
+
     // ========== 입력 핸들러 ==========
 
     fun onPatientNameChange(name: String) {
@@ -103,6 +117,93 @@ class CareRequestViewModel(
     }
 
     // ========== 유효성 검사 ==========
+
+    /**
+     * 현재 단계의 유효성 검사를 수행합니다.
+     *
+     * @return 유효성 검사 통과 여부
+     */
+    private fun validateCurrentStep(): Boolean {
+        return when (_state.value.currentStep) {
+            1 -> validateStep1()
+            2 -> validateStep2()
+            3 -> validateStep3()
+            else -> false
+        }
+    }
+
+    /** Step 1: 환자 정보 검증 */
+    private fun validateStep1(): Boolean {
+        val errors = mutableMapOf<String, String>()
+
+        if (_state.value.patientName.length < 2) {
+            errors["patientName"] = "환자명은 2자 이상 입력해주세요"
+        }
+
+        if (_state.value.patientCondition.isBlank()) {
+            errors["patientCondition"] = "환자 상태를 선택해주세요"
+        }
+
+        _state.update {
+            it.copy(
+                    patientNameError = errors["patientName"],
+                    patientConditionError = errors["patientCondition"]
+            )
+        }
+
+        return errors.isEmpty()
+    }
+
+    /** Step 2: 간병 기간 검증 */
+    private fun validateStep2(): Boolean {
+        val errors = mutableMapOf<String, String>()
+
+        if (_state.value.careStartDate.isBlank()) {
+            errors["careStartDate"] = "간병 시작일을 선택해주세요"
+        }
+
+        if (_state.value.careEndDate.isBlank()) {
+            errors["careEndDate"] = "간병 종료일을 선택해주세요"
+        }
+
+        _state.update {
+            it.copy(
+                    careStartDateError = errors["careStartDate"],
+                    careEndDateError = errors["careEndDate"]
+            )
+        }
+
+        return errors.isEmpty()
+    }
+
+    /** Step 3: 연락처 및 위치 검증 */
+    private fun validateStep3(): Boolean {
+        val errors = mutableMapOf<String, String>()
+
+        if (_state.value.guardianName.length < 2) {
+            errors["guardianName"] = "보호자명은 2자 이상 입력해주세요"
+        }
+
+        if (_state.value.location.isBlank()) {
+            errors["location"] = "위치를 입력해주세요"
+        }
+
+        val phoneRegex = "^010\\d{8}$".toRegex()
+        val cleanPhone = _state.value.guardianPhoneNumber.replace("-", "")
+        if (!phoneRegex.matches(cleanPhone)) {
+            errors["guardianPhoneNumber"] = "올바른 전화번호 형식이 아닙니다 (010-XXXX-XXXX)"
+        }
+
+        _state.update {
+            it.copy(
+                    guardianNameError = errors["guardianName"],
+                    locationError = errors["location"],
+                    guardianPhoneNumberError = errors["guardianPhoneNumber"]
+            )
+        }
+
+        return errors.isEmpty()
+    }
 
     /**
      * 폼 유효성 검사를 수행합니다.
