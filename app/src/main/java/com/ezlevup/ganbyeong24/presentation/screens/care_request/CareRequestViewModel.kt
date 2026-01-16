@@ -148,23 +148,16 @@ class CareRequestViewModel(
                             status = "pending"
                     )
 
-            repository
-                    .saveCareRequest(request)
-                    .onSuccess {
-                        // 환자명 저장
-                        viewModelScope.launch {
-                            recentPatientRepository.savePatientName(_state.value.patientName)
-                        }
-                        _state.update { it.copy(isLoading = false, isSuccess = true) }
-                    }
-                    .onFailure { error ->
-                        _state.update {
-                            it.copy(
-                                    isLoading = false,
-                                    errorMessage = error.message ?: "알 수 없는 오류가 발생했습니다"
-                            )
-                        }
-                    }
+            val result = repository.saveCareRequest(request)
+            val error = result.exceptionOrNull()
+            if (error == null) {
+                recentPatientRepository.savePatientName(_state.value.patientName)
+                _state.update { it.copy(isLoading = false, isSuccess = true) }
+            } else {
+                _state.update {
+                    it.copy(isLoading = false, errorMessage = error.message ?: "알 수 없는 오류가 발생했습니다")
+                }
+            }
         }
     }
 
