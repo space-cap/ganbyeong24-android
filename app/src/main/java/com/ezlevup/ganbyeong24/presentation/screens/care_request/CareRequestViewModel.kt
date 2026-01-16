@@ -27,6 +27,20 @@ class CareRequestViewModel(
     private val _state = MutableStateFlow(CareRequestState())
     val state: StateFlow<CareRequestState> = _state.asStateFlow()
 
+    // ========== 단계 네비게이션 ==========
+
+    /** 다음 단계로 이동합니다. */
+    fun nextStep() {
+        if (validateCurrentStep()) {
+            _state.update { it.copy(currentStep = (it.currentStep + 1).coerceAtMost(3)) }
+        }
+    }
+
+    /** 이전 단계로 이동합니다. */
+    fun previousStep() {
+        _state.update { it.copy(currentStep = (it.currentStep - 1).coerceAtLeast(1)) }
+    }
+
     // ========== 입력 핸들러 ==========
 
     fun onPatientNameChange(name: String) {
@@ -49,18 +63,50 @@ class CareRequestViewModel(
         _state.update { it.copy(careEndDate = date, careEndDateError = null) }
     }
 
+    fun onCityChange(city: String) {
+        _state.update {
+            it.copy(
+                    city = city,
+                    location =
+                            if (city.isNotEmpty() && it.district.isNotEmpty()) {
+                                "$city ${it.district}"
+                            } else {
+                                ""
+                            },
+                    locationError = null
+            )
+        }
+    }
+
+    fun onDistrictChange(district: String) {
+        _state.update {
+            it.copy(
+                    district = district,
+                    location =
+                            if (it.city.isNotEmpty() && district.isNotEmpty()) {
+                                "${it.city} $district"
+                            } else {
+                                ""
+                            },
+                    locationError = null
+            )
+        }
+    }
+
     fun onLocationChange(location: String) {
         _state.update { it.copy(location = location, locationError = null) }
     }
 
     fun onPatientPhoneNumberChange(phoneNumber: String) {
-        _state.update { it.copy(patientPhoneNumber = phoneNumber) }
+        // 숫자만 추출하여 저장 (VisualTransformation이 포맷팅 담당)
+        val digitsOnly = phoneNumber.filter { it.isDigit() }.take(11)
+        _state.update { it.copy(patientPhoneNumber = digitsOnly) }
     }
 
     fun onGuardianPhoneNumberChange(phoneNumber: String) {
-        _state.update {
-            it.copy(guardianPhoneNumber = phoneNumber, guardianPhoneNumberError = null)
-        }
+        // 숫자만 추출하여 저장 (VisualTransformation이 포맷팅 담당)
+        val digitsOnly = phoneNumber.filter { it.isDigit() }.take(11)
+        _state.update { it.copy(guardianPhoneNumber = digitsOnly, guardianPhoneNumberError = null) }
     }
 
     // ========== 신청 처리 ==========
@@ -103,6 +149,123 @@ class CareRequestViewModel(
     }
 
     // ========== 유효성 검사 ==========
+
+    /**
+     * 현재 단계의 유효성 검사를 수행합니다.
+     *
+     * @return 유효성 검사 통과 여부
+     */
+    private fun validateCurrentStep(): Boolean {
+        return when (_state.value.currentStep) {
+            1 -> validateStep1()
+            2 -> validateStep2()
+            3 -> validateStep3()
+            else -> false
+        }
+    }
+
+    /** Step 1: 환자 정보 검증 */
+    private fun validateStep1(): Boolean {
+        val errors = mutableMapOf<String, String>()
+
+        if (_state.value.patientName.length < 2) {
+            errors["patientName"] = "환자명은 2자 이상 입력해주세요"
+        }
+
+        if (_state.value.patientCondition.isBlank()) {
+            errors["patientCondition"] = "환자 상태를 선택해주세요"
+        }
+
+        _state.update {
+            it.copy(
+                    patientNameError = errors["patientName"],
+                    patientConditionError = errors["patientCondition"]
+            )
+        }
+
+        return errors.isEmpty()
+    }
+
+    /** Step 2: 간병 기간 검증 */
+    private fun validateStep2(): Boolean {
+        val errors = mutableMapOf<String, String>()
+
+        if (_state.value.careStartDate.isBlank()) {
+            errors["careStartDate"] = "간병 시작일을 선택해주세요"
+        }
+
+        if (_state.value.careEndDate.isBlank()) {
+            errors["careEndDate"] = "간병 종료일을 선택해주세요"
+        }
+
+        // 날짜 유효성 검사 (둘 다 입력된 경우에만)
+        if (_state.value.careStartDate.isNotBlank() && _state.value.careEndDate.isNotBlank()) {
+            try {
+                val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.KOREA)
+                val startDate = dateFormat.parse(_state.value.careStartDate)
+                val endDate = dateFormat.parse(_state.value.careEndDate)
+                val today =
+                        java.util.Calendar.getInstance()
+                                .apply {
+                                    set(java.util.Calendar.HOUR_OF_DAY, 0)
+                                    set(java.util.Calendar.MINUTE, 0)
+                                    set(java.util.Calendar.SECOND, 0)
+                                    set(java.util.Calendar.MILLISECOND, 0)
+                                }
+                                .time
+
+                // 시작일이 오늘 이전인지 확인
+                if (startDate != null && startDate.before(today)) {
+                    errors["careStartDate"] = "시작일은 오늘 이후여야 합니다"
+                }
+
+                // 종료일이 시작일보다 이전인지 확인
+                if (startDate != null && endDate != null && endDate.before(startDate)) {
+                    errors["careEndDate"] = "종료일은 시작일 이후여야 합니다"
+                }
+            } catch (e: Exception) {
+                // 날짜 파싱 실패 시 무시
+            }
+        }
+
+        _state.update {
+            it.copy(
+                    careStartDateError = errors["careStartDate"],
+                    careEndDateError = errors["careEndDate"]
+            )
+        }
+
+        return errors.isEmpty()
+    }
+
+    /** Step 3: 연락처 및 위치 검증 */
+    private fun validateStep3(): Boolean {
+        val errors = mutableMapOf<String, String>()
+
+        if (_state.value.guardianName.length < 2) {
+            errors["guardianName"] = "보호자명은 2자 이상 입력해주세요"
+        }
+
+        if (_state.value.location.isBlank()) {
+            errors["location"] = "위치를 입력해주세요"
+        }
+
+        val phoneRegex = "^010\\d{8}$".toRegex()
+        val cleanPhone = _state.value.guardianPhoneNumber.replace("-", "")
+        if (!phoneRegex.matches(cleanPhone)) {
+            errors["guardianPhoneNumber"] = "올바른 전화번호 형식이 아닙니다 (010-XXXX-XXXX)"
+        }
+
+        _state.update {
+            it.copy(
+                    guardianNameError = errors["guardianName"],
+                    locationError = errors["location"],
+                    guardianPhoneNumberError = errors["guardianPhoneNumber"]
+            )
+        }
+
+        return errors.isEmpty()
+    }
 
     /**
      * 폼 유효성 검사를 수행합니다.
