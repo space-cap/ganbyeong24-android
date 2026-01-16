@@ -63,6 +63,36 @@ class CareRequestViewModel(
         _state.update { it.copy(careEndDate = date, careEndDateError = null) }
     }
 
+    fun onCityChange(city: String) {
+        _state.update {
+            it.copy(
+                    city = city,
+                    location =
+                            if (city.isNotEmpty() && it.district.isNotEmpty()) {
+                                "$city ${it.district}"
+                            } else {
+                                ""
+                            },
+                    locationError = null
+            )
+        }
+    }
+
+    fun onDistrictChange(district: String) {
+        _state.update {
+            it.copy(
+                    district = district,
+                    location =
+                            if (it.city.isNotEmpty() && district.isNotEmpty()) {
+                                "${it.city} $district"
+                            } else {
+                                ""
+                            },
+                    locationError = null
+            )
+        }
+    }
+
     fun onLocationChange(location: String) {
         _state.update { it.copy(location = location, locationError = null) }
     }

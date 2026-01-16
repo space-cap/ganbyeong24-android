@@ -14,7 +14,9 @@ package com.ezlevup.ganbyeong24.presentation.screens.care_request
  * @property patientCondition 환자 상태
  * @property careStartDate 간병 시작일
  * @property careEndDate 간병 종료일
- * @property location 위치
+ * @property city 시/도
+ * @property district 구/군
+ * @property location 위치 (city + district 조합)
  * @property patientPhoneNumber 환자 연락처
  * @property guardianPhoneNumber 보호자 연락처
  * @property patientNameError 환자명 에러 메시지
@@ -35,6 +37,8 @@ data class CareRequestState(
         val patientCondition: String = "",
         val careStartDate: String = "",
         val careEndDate: String = "",
+        val city: String = "",
+        val district: String = "",
         val location: String = "",
         val patientPhoneNumber: String = "",
         val guardianPhoneNumber: String = "",

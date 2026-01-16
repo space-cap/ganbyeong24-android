@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.ezlevup.ganbyeong24.presentation.components.DatePickerField
 import com.ezlevup.ganbyeong24.presentation.components.GanbyeongButton
 import com.ezlevup.ganbyeong24.presentation.components.GanbyeongTextField
+import com.ezlevup.ganbyeong24.presentation.components.LocationSelector
 import com.ezlevup.ganbyeong24.presentation.components.PatientConditionSelector
 import com.ezlevup.ganbyeong24.presentation.components.StepIndicator
 import com.ezlevup.ganbyeong24.presentation.theme.GanbyeongTheme
@@ -103,7 +104,8 @@ fun CareRequestScreen(
                                                         viewModel::onGuardianNameChange,
                                                 onGuardianPhoneNumberChange =
                                                         viewModel::onGuardianPhoneNumberChange,
-                                                onLocationChange = viewModel::onLocationChange,
+                                                onCityChange = viewModel::onCityChange,
+                                                onDistrictChange = viewModel::onDistrictChange,
                                                 onPatientPhoneNumberChange =
                                                         viewModel::onPatientPhoneNumberChange
                                         )
@@ -254,7 +256,8 @@ private fun Step3Content(
         state: CareRequestState,
         onGuardianNameChange: (String) -> Unit,
         onGuardianPhoneNumberChange: (String) -> Unit,
-        onLocationChange: (String) -> Unit,
+        onCityChange: (String) -> Unit,
+        onDistrictChange: (String) -> Unit,
         onPatientPhoneNumberChange: (String) -> Unit
 ) {
         Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
@@ -288,15 +291,14 @@ private fun Step3Content(
                         textStyle = LocalTextStyle.current.copy(fontSize = 20.sp)
                 )
 
-                // 위치
-                GanbyeongTextField(
-                        value = state.location,
-                        onValueChange = onLocationChange,
-                        label = "위치 *",
-                        placeholder = "예: 서울시 강남구",
+                // 위치 (드롭다운)
+                LocationSelector(
+                        selectedCity = state.city,
+                        selectedDistrict = state.district,
+                        onCitySelected = onCityChange,
+                        onDistrictSelected = onDistrictChange,
                         isError = state.locationError != null,
-                        errorMessage = state.locationError,
-                        textStyle = LocalTextStyle.current.copy(fontSize = 20.sp)
+                        errorMessage = state.locationError
                 )
 
                 // 환자 연락처 (선택)
@@ -363,7 +365,8 @@ private fun Step3Preview() {
                                         ),
                                 onGuardianNameChange = {},
                                 onGuardianPhoneNumberChange = {},
-                                onLocationChange = {},
+                                onCityChange = {},
+                                onDistrictChange = {},
                                 onPatientPhoneNumberChange = {}
                         )
                 }
