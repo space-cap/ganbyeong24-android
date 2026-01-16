@@ -198,6 +198,36 @@ class CareRequestViewModel(
             errors["careEndDate"] = "간병 종료일을 선택해주세요"
         }
 
+        // 날짜 유효성 검사 (둘 다 입력된 경우에만)
+        if (_state.value.careStartDate.isNotBlank() && _state.value.careEndDate.isNotBlank()) {
+            try {
+                val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.KOREA)
+                val startDate = dateFormat.parse(_state.value.careStartDate)
+                val endDate = dateFormat.parse(_state.value.careEndDate)
+                val today =
+                        java.util.Calendar.getInstance()
+                                .apply {
+                                    set(java.util.Calendar.HOUR_OF_DAY, 0)
+                                    set(java.util.Calendar.MINUTE, 0)
+                                    set(java.util.Calendar.SECOND, 0)
+                                    set(java.util.Calendar.MILLISECOND, 0)
+                                }
+                                .time
+
+                // 시작일이 오늘 이전인지 확인
+                if (startDate != null && startDate.before(today)) {
+                    errors["careStartDate"] = "시작일은 오늘 이후여야 합니다"
+                }
+
+                // 종료일이 시작일보다 이전인지 확인
+                if (startDate != null && endDate != null && endDate.before(startDate)) {
+                    errors["careEndDate"] = "종료일은 시작일 이후여야 합니다"
+                }
+            } catch (e: Exception) {
+                // 날짜 파싱 실패 시 무시
+            }
+        }
+
         _state.update {
             it.copy(
                     careStartDateError = errors["careStartDate"],

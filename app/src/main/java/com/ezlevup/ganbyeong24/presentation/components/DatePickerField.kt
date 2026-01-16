@@ -75,7 +75,14 @@ fun DatePickerField(
                 isError = isError,
                 supportingText =
                         if (isError && errorMessage != null) {
-                            { Text(errorMessage, fontSize = 16.sp) }
+                            {
+                                Text(
+                                        text = errorMessage,
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = androidx.compose.ui.graphics.Color(0xFFD32F2F)
+                                )
+                            }
                         } else null,
                 modifier = Modifier.fillMaxWidth().clickable { showDatePicker = true },
                 textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
