@@ -22,130 +22,172 @@ class ProfileViewModel(
         private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(ProfileState())
-    val state: StateFlow<ProfileState> = _state.asStateFlow()
+        private val _state = MutableStateFlow(ProfileState())
+        val state: StateFlow<ProfileState> = _state.asStateFlow()
 
-    init {
-        loadUserInfo()
-    }
-
-    /** 사용자 정보를 로드합니다. */
-    fun loadUserInfo() {
-        viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true, error = null)
-
-            val userId = authRepository.getCurrentUserId()
-            if (userId == null) {
-                _state.value = _state.value.copy(isLoading = false, error = "로그인 정보를 찾을 수 없습니다")
-                return@launch
-            }
-
-            userRepository
-                    .getUser(userId)
-                    .fold(
-                            onSuccess = { user ->
-                                _state.value =
-                                        _state.value.copy(
-                                                email = user.email,
-                                                createdAt = user.createdAt,
-                                                isLoading = false,
-                                                error = null
-                                        )
-                            },
-                            onFailure = { exception ->
-                                _state.value =
-                                        _state.value.copy(
-                                                isLoading = false,
-                                                error = exception.message ?: "사용자 정보를 불러올 수 없습니다"
-                                        )
-                            }
-                    )
+        init {
+                loadUserInfo()
         }
-    }
 
-    /** 로그아웃을 처리합니다. */
-    fun logout() {
-        authRepository.logout()
-        _state.value = _state.value.copy(isLogoutSuccess = true)
-    }
+        /** 사용자 정보를 로드합니다. */
+        fun loadUserInfo() {
+                viewModelScope.launch {
+                        _state.value = _state.value.copy(isLoading = true, error = null)
 
-    /**
-     * 회원 탈퇴를 처리합니다.
-     * 1. Firestore에서 Soft Delete (isDeleted = true)
-     * 2. Firebase Auth 계정 삭제
-     */
-    fun deleteAccount() {
-        viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true, error = null)
-            android.util.Log.d("ProfileViewModel", "회원 탈퇴 시작")
+                        val userId = authRepository.getCurrentUserId()
+                        if (userId == null) {
+                                _state.value =
+                                        _state.value.copy(
+                                                isLoading = false,
+                                                error = "로그인 정보를 찾을 수 없습니다"
+                                        )
+                                return@launch
+                        }
 
-            val userId = authRepository.getCurrentUserId()
-            if (userId == null) {
-                android.util.Log.e("ProfileViewModel", "userId가 null입니다")
-                _state.value = _state.value.copy(isLoading = false, error = "로그인 정보를 찾을 수 없습니다")
-                return@launch
-            }
-
-            android.util.Log.d("ProfileViewModel", "userId: $userId")
-
-            // 1. Firestore에서 Soft Delete
-            userRepository
-                    .softDeleteUser(userId)
-                    .fold(
-                            onSuccess = {
-                                android.util.Log.d("ProfileViewModel", "Firestore Soft Delete 성공")
-                                // 2. Firebase Auth 계정 삭제
-                                viewModelScope.launch {
-                                    authRepository
-                                            .deleteAccount()
-                                            .fold(
-                                                    onSuccess = {
-                                                        android.util.Log.d(
-                                                                "ProfileViewModel",
-                                                                "Firebase Auth 계정 삭제 성공"
+                        userRepository
+                                .getUser(userId)
+                                .fold(
+                                        onSuccess = { user ->
+                                                _state.value =
+                                                        _state.value.copy(
+                                                                email = user.email,
+                                                                createdAt = user.createdAt,
+                                                                isLoading = false,
+                                                                error = null
                                                         )
-                                                        _state.value =
-                                                                _state.value.copy(
-                                                                        isLoading = false,
-                                                                        isDeleteSuccess = true
-                                                                )
-                                                        android.util.Log.d(
-                                                                "ProfileViewModel",
-                                                                "isDeleteSuccess = true 설정 완료"
+                                        },
+                                        onFailure = { exception ->
+                                                _state.value =
+                                                        _state.value.copy(
+                                                                isLoading = false,
+                                                                error = exception.message
+                                                                                ?: "사용자 정보를 불러올 수 없습니다"
                                                         )
-                                                    },
-                                                    onFailure = { exception ->
-                                                        android.util.Log.e(
-                                                                "ProfileViewModel",
-                                                                "Firebase Auth 계정 삭제 실패: ${exception.message}"
-                                                        )
-                                                        _state.value =
-                                                                _state.value.copy(
-                                                                        isLoading = false,
-                                                                        error = exception.message
-                                                                                        ?: "계정 삭제에 실패했습니다"
-                                                                )
-                                                    }
-                                            )
-                                }
-                            },
-                            onFailure = { exception ->
-                                android.util.Log.e(
-                                        "ProfileViewModel",
-                                        "Firestore Soft Delete 실패: ${exception.message}"
+                                        }
                                 )
+                }
+        }
+
+        /** 로그아웃을 처리합니다. */
+        fun logout() {
+                authRepository.logout()
+                _state.value = _state.value.copy(isLogoutSuccess = true)
+        }
+
+        /**
+         * 회원 탈퇴를 처리합니다.
+         * 1. Firestore에서 Soft Delete (isDeleted = true)
+         * 2. Firebase Auth 계정 삭제
+         */
+        fun deleteAccount() {
+                viewModelScope.launch {
+                        _state.value = _state.value.copy(isLoading = true, error = null)
+                        android.util.Log.d("ProfileViewModel", "회원 탈퇴 시작")
+
+                        val userId = authRepository.getCurrentUserId()
+                        if (userId == null) {
+                                android.util.Log.e("ProfileViewModel", "userId가 null입니다")
                                 _state.value =
                                         _state.value.copy(
                                                 isLoading = false,
-                                                error = exception.message ?: "회원 탈퇴에 실패했습니다"
+                                                error = "로그인 정보를 찾을 수 없습니다"
                                         )
-                            }
-                    )
-        }
-    }
+                                return@launch
+                        }
 
-    /** 에러 메시지를 초기화합니다. */
-    fun clearError() {
-        _state.value = _state.value.copy(error = null)
-    }
+                        android.util.Log.d("ProfileViewModel", "userId: $userId")
+
+                        // 1. Firestore에서 Soft Delete
+                        userRepository
+                                .softDeleteUser(userId)
+                                .fold(
+                                        onSuccess = {
+                                                android.util.Log.d(
+                                                        "ProfileViewModel",
+                                                        "Firestore Soft Delete 성공"
+                                                )
+                                                // 2. Firebase Auth 계정 삭제
+                                                viewModelScope.launch {
+                                                        authRepository
+                                                                .deleteAccount()
+                                                                .fold(
+                                                                        onSuccess = {
+                                                                                android.util.Log.d(
+                                                                                        "ProfileViewModel",
+                                                                                        "Firebase Auth 계정 삭제 성공"
+                                                                                )
+                                                                                _state.value =
+                                                                                        _state.value
+                                                                                                .copy(
+                                                                                                        isLoading =
+                                                                                                                false,
+                                                                                                        isDeleteSuccess =
+                                                                                                                true
+                                                                                                )
+                                                                                android.util.Log.d(
+                                                                                        "ProfileViewModel",
+                                                                                        "isDeleteSuccess = true 설정 완료"
+                                                                                )
+                                                                        },
+                                                                        onFailure = { exception ->
+                                                                                android.util.Log.e(
+                                                                                        "ProfileViewModel",
+                                                                                        "Firebase Auth 계정 삭제 실패: ${exception.message}"
+                                                                                )
+
+                                                                                // 재로그인 필요 시 자동 로그아웃
+                                                                                // 후 로그인 화면으로
+                                                                                if (exception
+                                                                                                .message
+                                                                                                ?.contains(
+                                                                                                        "다시 로그인"
+                                                                                                ) ==
+                                                                                                true
+                                                                                ) {
+                                                                                        authRepository
+                                                                                                .logout()
+                                                                                        _state.value =
+                                                                                                _state.value
+                                                                                                        .copy(
+                                                                                                                isLoading =
+                                                                                                                        false,
+                                                                                                                isLogoutSuccess =
+                                                                                                                        true
+                                                                                                        )
+                                                                                } else {
+                                                                                        _state.value =
+                                                                                                _state.value
+                                                                                                        .copy(
+                                                                                                                isLoading =
+                                                                                                                        false,
+                                                                                                                error =
+                                                                                                                        exception
+                                                                                                                                .message
+                                                                                                                                ?: "계정 삭제에 실패했습니다"
+                                                                                                        )
+                                                                                }
+                                                                        }
+                                                                )
+                                                }
+                                        },
+                                        onFailure = { exception ->
+                                                android.util.Log.e(
+                                                        "ProfileViewModel",
+                                                        "Firestore Soft Delete 실패: ${exception.message}"
+                                                )
+                                                _state.value =
+                                                        _state.value.copy(
+                                                                isLoading = false,
+                                                                error = exception.message
+                                                                                ?: "회원 탈퇴에 실패했습니다"
+                                                        )
+                                        }
+                                )
+                }
+        }
+
+        /** 에러 메시지를 초기화합니다. */
+        fun clearError() {
+                _state.value = _state.value.copy(error = null)
+        }
 }
