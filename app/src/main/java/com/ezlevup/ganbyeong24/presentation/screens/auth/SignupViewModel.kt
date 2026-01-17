@@ -57,6 +57,8 @@ class SignupViewModel(
                                     _state.update { it.copy(isLoading = false, isSuccess = true) }
                                 }
                                 .onFailure { error ->
+                                    // 사용자 문서 생성 실패 시 Auth 계정도 롤백 (best‑effort)
+                                    authRepository.deleteAccount()
                                     _state.update {
                                         it.copy(
                                                 isLoading = false,
