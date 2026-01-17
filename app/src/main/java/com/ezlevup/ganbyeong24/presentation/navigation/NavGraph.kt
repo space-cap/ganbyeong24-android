@@ -85,7 +85,8 @@ fun GanbyeongNavGraph(
                     onGuardianSelected = { navController.navigate(Screen.CareRequest.route) },
                     onCaregiverSelected = {
                         navController.navigate(Screen.CaregiverRegistration.route)
-                    }
+                    },
+                    onNavigateToProfile = { navController.navigate(Screen.Profile.route) }
             )
         }
 
@@ -108,6 +109,23 @@ fun GanbyeongNavGraph(
                     onSuccess = {
                         navController.navigate(Screen.Result.createRoute("caregiver")) {
                             popUpTo(Screen.RoleSelection.route)
+                        }
+                    }
+            )
+        }
+
+        // 프로필/설정 화면
+        composable(Screen.Profile.route) {
+            com.ezlevup.ganbyeong24.presentation.screens.profile.ProfileScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onLogoutSuccess = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    },
+                    onDeleteSuccess = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(0) { inclusive = true }
                         }
                     }
             )

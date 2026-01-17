@@ -3,6 +3,7 @@ package com.ezlevup.ganbyeong24.presentation.screens.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ezlevup.ganbyeong24.data.repository.AuthRepository
+import com.ezlevup.ganbyeong24.data.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,8 +14,12 @@ import kotlinx.coroutines.launch
  * 회원가입 화면 ViewModel
  *
  * @property authRepository 인증 Repository
+ * @property userRepository 사용자 Repository
  */
-class SignupViewModel(private val authRepository: AuthRepository) : ViewModel() {
+class SignupViewModel(
+        private val authRepository: AuthRepository,
+        private val userRepository: UserRepository
+) : ViewModel() {
 
     private val _state = MutableStateFlow(SignupState())
     val state: StateFlow<SignupState> = _state.asStateFlow()
@@ -44,7 +49,24 @@ class SignupViewModel(private val authRepository: AuthRepository) : ViewModel() 
 
             authRepository
                     .signup(_state.value.email, _state.value.password)
-                    .onSuccess { _state.update { it.copy(isLoading = false, isSuccess = true) } }
+                    .onSuccess { userId ->
+                        // Firestore에 User 문서 생성
+                        userRepository
+                                .createUser(userId, _state.value.email)
+                                .onSuccess {
+                                    _state.update { it.copy(isLoading = false, isSuccess = true) }
+                                }
+                                .onFailure { error ->
+                                    // 사용자 문서 생성 실패 시 Auth 계정도 롤백 (best‑effort)
+                                    authRepository.deleteAccount()
+                                    _state.update {
+                                        it.copy(
+                                                isLoading = false,
+                                                errorMessage = "사용자 정보 저장에 실패했습니다: ${error.message}"
+                                        )
+                                    }
+                                }
+                    }
                     .onFailure { error ->
                         _state.update {
                             it.copy(isLoading = false, errorMessage = getErrorMessage(error))

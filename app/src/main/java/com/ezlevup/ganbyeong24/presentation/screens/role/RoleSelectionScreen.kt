@@ -5,6 +5,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,42 +23,68 @@ import com.ezlevup.ganbyeong24.presentation.theme.GanbyeongTheme
  *
  * @param onGuardianSelected 보호자 선택 시 호출되는 콜백
  * @param onCaregiverSelected 간병사 선택 시 호출되는 콜백
+ * @param onNavigateToProfile 프로필/설정 화면으로 이동하는 콜백
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RoleSelectionScreen(onGuardianSelected: () -> Unit, onCaregiverSelected: () -> Unit) {
-    Column(
-            modifier = Modifier.fillMaxSize().padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-    ) {
-        // 제목
-        Text(
-                text = "간병24에 오신 것을\n환영합니다",
-                style = MaterialTheme.typography.headlineLarge,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 16.dp)
-        )
+fun RoleSelectionScreen(
+        onGuardianSelected: () -> Unit,
+        onCaregiverSelected: () -> Unit,
+        onNavigateToProfile: () -> Unit = {}
+) {
+        Scaffold(
+                topBar = {
+                        TopAppBar(
+                                title = { Text("간병24") },
+                                actions = {
+                                        IconButton(onClick = onNavigateToProfile) {
+                                                Icon(
+                                                        imageVector = Icons.Default.Settings,
+                                                        contentDescription = "설정"
+                                                )
+                                        }
+                                }
+                        )
+                }
+        ) { paddingValues ->
+                Column(
+                        modifier = Modifier.fillMaxSize().padding(paddingValues).padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                ) {
+                        // 제목
+                        Text(
+                                text = "간병24에 오신 것을\n환영합니다",
+                                style = MaterialTheme.typography.headlineLarge,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(bottom = 16.dp)
+                        )
 
-        // 설명
-        Text(
-                text = "원하시는 서비스를 선택해주세요",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 48.dp)
-        )
+                        // 설명
+                        Text(
+                                text = "원하시는 서비스를 선택해주세요",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(bottom = 48.dp)
+                        )
 
-        // 보호자 버튼
-        RoleButton(
-                icon = Icons.Default.Favorite,
-                text = "간병이 필요해요",
-                onClick = onGuardianSelected,
-                modifier = Modifier.padding(bottom = 16.dp)
-        )
+                        // 보호자 버튼
+                        RoleButton(
+                                icon = Icons.Default.Favorite,
+                                text = "간병이 필요해요",
+                                onClick = onGuardianSelected,
+                                modifier = Modifier.padding(bottom = 16.dp)
+                        )
 
-        // 간병사 버튼
-        RoleButton(icon = Icons.Default.Person, text = "간병사로 등록할게요", onClick = onCaregiverSelected)
-    }
+                        // 간병사 버튼
+                        RoleButton(
+                                icon = Icons.Default.Person,
+                                text = "간병사로 등록할게요",
+                                onClick = onCaregiverSelected
+                        )
+                }
+        }
 }
 
 /**
@@ -77,21 +104,28 @@ private fun RoleButton(
         onClick: () -> Unit,
         modifier: Modifier = Modifier
 ) {
-    Button(
-            onClick = onClick,
-            modifier = modifier.fillMaxWidth().height(80.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-    ) {
-        Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+        Button(
+                onClick = onClick,
+                modifier = modifier.fillMaxWidth().height(80.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors =
+                        ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                        )
         ) {
-            Icon(imageVector = icon, contentDescription = null, modifier = Modifier.size(32.dp))
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(text = text, style = MaterialTheme.typography.headlineMedium)
+                Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                ) {
+                        Icon(
+                                imageVector = icon,
+                                contentDescription = null,
+                                modifier = Modifier.size(32.dp)
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Text(text = text, style = MaterialTheme.typography.headlineMedium)
+                }
         }
-    }
 }
 
 // ========== Preview ==========
@@ -99,5 +133,11 @@ private fun RoleButton(
 @Preview(showBackground = true)
 @Composable
 private fun RoleSelectionScreenPreview() {
-    GanbyeongTheme { RoleSelectionScreen(onGuardianSelected = {}, onCaregiverSelected = {}) }
+        GanbyeongTheme {
+                RoleSelectionScreen(
+                        onGuardianSelected = {},
+                        onCaregiverSelected = {},
+                        onNavigateToProfile = {}
+                )
+        }
 }

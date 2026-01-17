@@ -24,6 +24,9 @@ sealed class Screen(val route: String) {
     /** 간병사 등록 화면 간병사가 자신의 정보를 등록하는 화면 */
     object CaregiverRegistration : Screen("caregiver_registration")
 
+    /** 프로필/설정 화면 사용자 정보 확인 및 설정 화면 */
+    object Profile : Screen("profile")
+
     /**
      * 결과 화면 신청 또는 등록 완료 후 표시되는 화면
      *
