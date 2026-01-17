@@ -64,6 +64,8 @@ class LoginViewModel(
                                     }
                                 }
                                 .onFailure { error ->
+                                    // User 문서 조회 실패 시 Auth 로그아웃 (일관성 유지)
+                                    authRepository.logout()
                                     _state.update {
                                         it.copy(
                                                 isLoading = false,
