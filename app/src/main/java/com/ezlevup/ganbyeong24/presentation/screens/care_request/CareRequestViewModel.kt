@@ -5,9 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.ezlevup.ganbyeong24.data.model.CareRequest
 import com.ezlevup.ganbyeong24.data.repository.AuthRepository
 import com.ezlevup.ganbyeong24.data.repository.CareRequestRepository
+import com.ezlevup.ganbyeong24.data.repository.RecentPatientRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -21,11 +24,22 @@ import kotlinx.coroutines.launch
  */
 class CareRequestViewModel(
         private val repository: CareRequestRepository,
-        private val authRepository: AuthRepository
+        private val authRepository: AuthRepository,
+        private val recentPatientRepository: RecentPatientRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CareRequestState())
     val state: StateFlow<CareRequestState> = _state.asStateFlow()
+
+    // 최근 환자 목록
+    val recentPatients: StateFlow<List<String>> =
+            recentPatientRepository
+                    .getRecentPatientNames()
+                    .stateIn(
+                            scope = viewModelScope,
+                            started = SharingStarted.WhileSubscribed(5000),
+                            initialValue = emptyList()
+                    )
 
     // ========== 단계 네비게이션 ==========
 
@@ -134,18 +148,28 @@ class CareRequestViewModel(
                             status = "pending"
                     )
 
-            repository
-                    .saveCareRequest(request)
-                    .onSuccess { _state.update { it.copy(isLoading = false, isSuccess = true) } }
-                    .onFailure { error ->
-                        _state.update {
-                            it.copy(
-                                    isLoading = false,
-                                    errorMessage = error.message ?: "알 수 없는 오류가 발생했습니다"
-                            )
-                        }
-                    }
+            val result = repository.saveCareRequest(request)
+            val error = result.exceptionOrNull()
+            if (error == null) {
+                recentPatientRepository.savePatientName(_state.value.patientName)
+                _state.update { it.copy(isLoading = false, isSuccess = true) }
+            } else {
+                _state.update {
+                    it.copy(isLoading = false, errorMessage = error.message ?: "알 수 없는 오류가 발생했습니다")
+                }
+            }
         }
+    }
+
+    // ========== 최근 환자 관리 ==========
+
+    /**
+     * 최근 환자명 삭제
+     *
+     * @param patientName 삭제할 환자명
+     */
+    fun removeRecentPatient(patientName: String) {
+        viewModelScope.launch { recentPatientRepository.deletePatientName(patientName) }
     }
 
     // ========== 유효성 검사 ==========

@@ -20,6 +20,7 @@ import com.ezlevup.ganbyeong24.presentation.components.GanbyeongButton
 import com.ezlevup.ganbyeong24.presentation.components.GanbyeongTextField
 import com.ezlevup.ganbyeong24.presentation.components.LocationSelector
 import com.ezlevup.ganbyeong24.presentation.components.PatientConditionSelector
+import com.ezlevup.ganbyeong24.presentation.components.RecentPatientChips
 import com.ezlevup.ganbyeong24.presentation.components.StepIndicator
 import com.ezlevup.ganbyeong24.presentation.theme.GanbyeongTheme
 import com.ezlevup.ganbyeong24.util.PhoneNumberVisualTransformation
@@ -42,6 +43,7 @@ fun CareRequestScreen(
         onSuccess: () -> Unit
 ) {
         val state by viewModel.state.collectAsState()
+        val recentPatients by viewModel.recentPatients.collectAsState()
 
         // 신청 성공 시 ResultScreen으로 이동
         LaunchedEffect(state.isSuccess) {
@@ -86,10 +88,13 @@ fun CareRequestScreen(
                                 1 ->
                                         Step1Content(
                                                 state = state,
+                                                recentPatients = recentPatients,
                                                 onPatientNameChange =
                                                         viewModel::onPatientNameChange,
                                                 onPatientConditionChange =
-                                                        viewModel::onPatientConditionChange
+                                                        viewModel::onPatientConditionChange,
+                                                onRecentPatientRemoved =
+                                                        viewModel::removeRecentPatient
                                         )
                                 2 ->
                                         Step2Content(
@@ -176,8 +181,10 @@ fun CareRequestScreen(
 @Composable
 private fun Step1Content(
         state: CareRequestState,
+        recentPatients: List<String>,
         onPatientNameChange: (String) -> Unit,
-        onPatientConditionChange: (String) -> Unit
+        onPatientConditionChange: (String) -> Unit,
+        onRecentPatientRemoved: (String) -> Unit
 ) {
         Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
                 Text(
@@ -185,6 +192,13 @@ private fun Step1Content(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
+                )
+
+                // 최근 신청 환자 칩
+                RecentPatientChips(
+                        recentPatients = recentPatients,
+                        onPatientSelected = onPatientNameChange,
+                        onPatientRemoved = onRecentPatientRemoved
                 )
 
                 // 환자명
@@ -329,8 +343,10 @@ private fun Step1Preview() {
                                                 patientName = "홍길동",
                                                 patientCondition = "거동 가능"
                                         ),
+                                recentPatients = listOf("김철수", "이영희"),
                                 onPatientNameChange = {},
-                                onPatientConditionChange = {}
+                                onPatientConditionChange = {},
+                                onRecentPatientRemoved = {}
                         )
                 }
         }

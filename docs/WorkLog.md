@@ -497,28 +497,57 @@ docs/WorkLog.md 파일 확인해줘.
 
 ---
 
-**마지막 업데이트**: 2026-01-15 20:09
+**마지막 업데이트**: 2026-01-16 20:31
+
+---
+
+## � 2026-01-16 (Day 3)
+
+### ✅ 완료한 작업
+
+#### 4단계: 시니어 친화적 UI 개선 (Issue #28)
+- [x] **CareRequestScreen 리팩토링**:
+  - 화면을 3단계로 분리 (환자 정보 → 간병 기간 → 연락처)
+  - `StepIndicator`, `PatientConditionSelector` 등 공통 컴포넌트 개발
+  - `LocationSelector`로 위치 입력 개선 (시/도, 구/군 드롭다운)
+- [x] **입력 편의성 강화**:
+  - `DatePickerField`: 날짜 선택 UI 적용
+  - `PhoneNumberVisualTransformation`: 전화번호 자동 포맷팅 및 커서 제어
+  - 날짜 유효성 검사 (시작일 < 종료일 등)
+  - 에러 메시지 시인성 개선 (크고 굵은 빨간색 텍스트)
+
+#### 5단계: 최근 신청 환자 빠른 선택 (Issue #30)
+- [x] **Room Database 구축**:
+  - `RecentPatient` Entity, Access Object (DAO) 생성
+  - `AppDatabase` 설정 및 Koin 주입
+  - `RecentPatientRepository`: 최근 환자 5명 자동 관리 로직
+- [x] **UI 통합**:
+  - `RecentPatientChips`: 칩 버튼 형태의 빠른 선택 UI
+  - 간병 신청 성공 시 자동 저장
+  - 목록에서 삭제 기능 구현
+
+### 📝 배운 것
+- **VisualTransformation**: 원본 데이터(숫자)와 표시 데이터(형식화된 번호)를 분리하여 커서 튐 현상 해결
+- **Room + KSP**: Kotlin 2.0.21과 KSP 버전 간의 호환성 이슈 해결 (`2.0.21-1.0.28`)
+- **Jetpack Compose Preview**: 컴포넌트 파라미터 변경 시 Preview도 함께 업데이트해야 함
+- **Material3 FilterChip**: `enabled`와 `selected` 속성의 필수값 처리
+
+### ⚠️ 이슈 및 해결
+- **문제**: `AbstractKotlinCompile` 관련 빌드 에러
+  - **해결**: `build.gradle.kts`에서 KSP 플러그인 버전을 `2.0.21-1.0.28`로 다운그레이드하여 호환성 확보
+- **문제**: `FilterChipBorder` 파라미터 누락
+  - **해결**: `enabled`, `selected` 파라미터 명시적 지정
 
 ---
 
 ## 📝 다음 작업
 
-### 5단계: 데이터 레이어 개선
+### 6단계: 데이터 레이어 개선
 
-#### 간병 신청 목록 화면 (CareRequestListScreen)
-- [ ] Repository에 사용자별 조회 함수 추가
-  - `getMyRequests(userId: String): Flow<List<CareRequest>>`
-  - Firestore Snapshot Listener 사용
-- [ ] CareRequestListState 데이터 클래스
-- [ ] CareRequestListViewModel 구현
-- [ ] CareRequestListScreen UI 구현
-  - LazyColumn으로 목록 표시
-  - 신청 상태별 색상 구분
-  - 새로고침 기능
-- [ ] Navigation 통합
-  - RoleSelectionScreen에 "내 신청 목록" 버튼 추가
-  - Screen.kt에 CareRequestList 추가
-- [ ] 테스트
-  - 빌드 테스트
-  - 실행 테스트 (목록 조회, 실시간 업데이트)
+#### 간병 신청 목록 화면 (Issue #32 예정)
+- [ ] Firestore 쿼리 추가: 내 신청 목록 조회
+- [ ] `CareRequestListScreen` 구현
+- [ ] `CareRequestListViewModel` 구현
+- [ ] 리스트 아이템 UI (상태별 뱃지 표시)
+- [ ] RoleSelectionScreen에 진입 버튼 추가
 
