@@ -88,7 +88,14 @@ class AuthRepositoryImpl(private val auth: FirebaseAuth) : AuthRepository {
             auth.currentUser?.delete()?.await() ?: throw Exception("로그인된 사용자가 없습니다")
             Result.success(Unit)
         } catch (e: Exception) {
-            Result.failure(e)
+            val errorMessage =
+                    when {
+                        e.message?.contains("REQUIRES_RECENT_LOGIN", ignoreCase = true) == true ||
+                                e.message?.contains("recent", ignoreCase = true) == true ->
+                                "보안을 위해 다시 로그인 후 시도해주세요"
+                        else -> e.message ?: "계정 삭제에 실패했습니다"
+                    }
+            Result.failure(Exception(errorMessage))
         }
     }
 }
