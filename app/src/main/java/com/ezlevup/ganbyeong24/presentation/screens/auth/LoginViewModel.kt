@@ -3,6 +3,7 @@ package com.ezlevup.ganbyeong24.presentation.screens.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ezlevup.ganbyeong24.data.repository.AuthRepository
+import com.ezlevup.ganbyeong24.data.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,8 +14,12 @@ import kotlinx.coroutines.launch
  * 로그인 화면 ViewModel
  *
  * @property authRepository 인증 Repository
+ * @property userRepository 사용자 Repository
  */
-class LoginViewModel(private val authRepository: AuthRepository) : ViewModel() {
+class LoginViewModel(
+        private val authRepository: AuthRepository,
+        private val userRepository: UserRepository
+) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
     val state: StateFlow<LoginState> = _state.asStateFlow()
@@ -40,7 +45,34 @@ class LoginViewModel(private val authRepository: AuthRepository) : ViewModel() {
 
             authRepository
                     .login(_state.value.email, _state.value.password)
-                    .onSuccess { _state.update { it.copy(isLoading = false, isSuccess = true) } }
+                    .onSuccess { userId ->
+                        // 사용자 정보 확인 (탈퇴 여부 체크)
+                        userRepository
+                                .getUser(userId)
+                                .onSuccess { user ->
+                                    if (user.isDeleted) {
+                                        // 탈퇴한 계정
+                                        authRepository.logout()
+                                        _state.update {
+                                            it.copy(isLoading = false, errorMessage = "탈퇴한 계정입니다")
+                                        }
+                                    } else {
+                                        // 정상 로그인
+                                        _state.update {
+                                            it.copy(isLoading = false, isSuccess = true)
+                                        }
+                                    }
+                                }
+                                .onFailure { error ->
+                                    _state.update {
+                                        it.copy(
+                                                isLoading = false,
+                                                errorMessage =
+                                                        "사용자 정보를 불러올 수 없습니다: ${error.message}"
+                                        )
+                                    }
+                                }
+                    }
                     .onFailure { error ->
                         _state.update {
                             it.copy(isLoading = false, errorMessage = getErrorMessage(error))

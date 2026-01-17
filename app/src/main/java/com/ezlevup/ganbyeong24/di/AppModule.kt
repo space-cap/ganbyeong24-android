@@ -8,10 +8,13 @@ import com.ezlevup.ganbyeong24.data.repository.CareRequestRepositoryImpl
 import com.ezlevup.ganbyeong24.data.repository.CaregiverRepository
 import com.ezlevup.ganbyeong24.data.repository.CaregiverRepositoryImpl
 import com.ezlevup.ganbyeong24.data.repository.RecentPatientRepository
+import com.ezlevup.ganbyeong24.data.repository.UserRepository
+import com.ezlevup.ganbyeong24.data.repository.UserRepositoryImpl
 import com.ezlevup.ganbyeong24.presentation.screens.auth.LoginViewModel
 import com.ezlevup.ganbyeong24.presentation.screens.auth.SignupViewModel
 import com.ezlevup.ganbyeong24.presentation.screens.care_request.CareRequestViewModel
 import com.ezlevup.ganbyeong24.presentation.screens.caregiver.CaregiverRegistrationViewModel
+import com.ezlevup.ganbyeong24.presentation.screens.profile.ProfileViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import org.koin.android.ext.koin.androidContext
@@ -35,13 +38,15 @@ val appModule = module {
 
     // Repository
     single<AuthRepository> { AuthRepositoryImpl(get()) }
+    single<UserRepository> { UserRepositoryImpl(get()) }
     single<CareRequestRepository> { CareRequestRepositoryImpl(get()) }
     single<CaregiverRepository> { CaregiverRepositoryImpl(get()) }
     single { RecentPatientRepository(get()) }
 
     // ViewModel
-    viewModel { LoginViewModel(get()) }
-    viewModel { SignupViewModel(get()) }
+    viewModel { LoginViewModel(get(), get()) }
+    viewModel { SignupViewModel(get(), get()) }
     viewModel { CareRequestViewModel(get(), get(), get()) }
     viewModel { CaregiverRegistrationViewModel(get(), get()) }
+    viewModel { ProfileViewModel(get(), get()) }
 }
