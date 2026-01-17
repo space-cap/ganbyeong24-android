@@ -77,31 +77,48 @@ class ProfileViewModel(
     fun deleteAccount() {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true, error = null)
+            android.util.Log.d("ProfileViewModel", "회원 탈퇴 시작")
 
             val userId = authRepository.getCurrentUserId()
             if (userId == null) {
+                android.util.Log.e("ProfileViewModel", "userId가 null입니다")
                 _state.value = _state.value.copy(isLoading = false, error = "로그인 정보를 찾을 수 없습니다")
                 return@launch
             }
+
+            android.util.Log.d("ProfileViewModel", "userId: $userId")
 
             // 1. Firestore에서 Soft Delete
             userRepository
                     .softDeleteUser(userId)
                     .fold(
                             onSuccess = {
+                                android.util.Log.d("ProfileViewModel", "Firestore Soft Delete 성공")
                                 // 2. Firebase Auth 계정 삭제
                                 viewModelScope.launch {
                                     authRepository
                                             .deleteAccount()
                                             .fold(
                                                     onSuccess = {
+                                                        android.util.Log.d(
+                                                                "ProfileViewModel",
+                                                                "Firebase Auth 계정 삭제 성공"
+                                                        )
                                                         _state.value =
                                                                 _state.value.copy(
                                                                         isLoading = false,
                                                                         isDeleteSuccess = true
                                                                 )
+                                                        android.util.Log.d(
+                                                                "ProfileViewModel",
+                                                                "isDeleteSuccess = true 설정 완료"
+                                                        )
                                                     },
                                                     onFailure = { exception ->
+                                                        android.util.Log.e(
+                                                                "ProfileViewModel",
+                                                                "Firebase Auth 계정 삭제 실패: ${exception.message}"
+                                                        )
                                                         _state.value =
                                                                 _state.value.copy(
                                                                         isLoading = false,
@@ -113,6 +130,10 @@ class ProfileViewModel(
                                 }
                             },
                             onFailure = { exception ->
+                                android.util.Log.e(
+                                        "ProfileViewModel",
+                                        "Firestore Soft Delete 실패: ${exception.message}"
+                                )
                                 _state.value =
                                         _state.value.copy(
                                                 isLoading = false,
