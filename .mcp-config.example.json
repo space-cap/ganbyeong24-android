@@ -1,0 +1,15 @@
+{
+    "mcpServers": {
+        "firebase": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@gannonh/firebase-mcp"
+            ],
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "./firebase-service-account.json",
+                "FIREBASE_PROJECT_ID": "ganbyeong24"
+            }
+        }
+    }
+}
