@@ -35,4 +35,34 @@ class CareRequestRepositoryImpl(private val firestore: FirebaseFirestore) : Care
             Result.failure(e)
         }
     }
+
+    /**
+     * 특정 사용자의 간병 신청 목록을 조회합니다.
+     *
+     * @param userId 사용자 ID (Firebase Auth)
+     * @return Result<List<CareRequest>> 성공 시 신청 목록, 실패 시 에러
+     */
+    override suspend fun getCareRequestsByUserId(userId: String): Result<List<CareRequest>> {
+        return try {
+            val snapshot =
+                    firestore
+                            .collection(COLLECTION_NAME)
+                            .whereEqualTo("userId", userId)
+                            .orderBy(
+                                    "createdAt",
+                                    com.google.firebase.firestore.Query.Direction.DESCENDING
+                            )
+                            .get()
+                            .await()
+
+            val careRequests =
+                    snapshot.documents.mapNotNull { doc ->
+                        doc.toObject(CareRequest::class.java)?.copy(id = doc.id)
+                    }
+
+            Result.success(careRequests)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

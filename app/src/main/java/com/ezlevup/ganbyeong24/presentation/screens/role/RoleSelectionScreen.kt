@@ -30,7 +30,8 @@ import com.ezlevup.ganbyeong24.presentation.theme.GanbyeongTheme
 fun RoleSelectionScreen(
         onGuardianSelected: () -> Unit,
         onCaregiverSelected: () -> Unit,
-        onNavigateToProfile: () -> Unit = {}
+        onNavigateToProfile: () -> Unit = {},
+        onViewMyRequests: () -> Unit = {}
 ) {
         Scaffold(
                 topBar = {
@@ -83,6 +84,14 @@ fun RoleSelectionScreen(
                                 text = "간병사로 등록할게요",
                                 onClick = onCaregiverSelected
                         )
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        // 내 신청 내역 보기 버튼
+                        OutlinedButton(
+                                onClick = onViewMyRequests,
+                                modifier = Modifier.fillMaxWidth()
+                        ) { Text("내 신청 내역 보기") }
                 }
         }
 }

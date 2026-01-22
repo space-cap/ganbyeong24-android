@@ -15,4 +15,12 @@ interface CareRequestRepository {
      * @return Result<String> 성공 시 문서 ID, 실패 시 에러
      */
     suspend fun saveCareRequest(request: CareRequest): Result<String>
+
+    /**
+     * 특정 사용자의 간병 신청 목록을 조회합니다.
+     *
+     * @param userId 사용자 ID (Firebase Auth)
+     * @return Result<List<CareRequest>> 성공 시 신청 목록, 실패 시 에러
+     */
+    suspend fun getCareRequestsByUserId(userId: String): Result<List<CareRequest>>
 }

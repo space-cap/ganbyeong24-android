@@ -13,6 +13,7 @@ import com.ezlevup.ganbyeong24.data.repository.UserRepositoryImpl
 import com.ezlevup.ganbyeong24.presentation.screens.auth.LoginViewModel
 import com.ezlevup.ganbyeong24.presentation.screens.auth.SignupViewModel
 import com.ezlevup.ganbyeong24.presentation.screens.care_request.CareRequestViewModel
+import com.ezlevup.ganbyeong24.presentation.screens.care_request_list.CareRequestListViewModel
 import com.ezlevup.ganbyeong24.presentation.screens.caregiver.CaregiverRegistrationViewModel
 import com.ezlevup.ganbyeong24.presentation.screens.profile.ProfileViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -47,6 +48,7 @@ val appModule = module {
     viewModel { LoginViewModel(get(), get()) }
     viewModel { SignupViewModel(get(), get()) }
     viewModel { CareRequestViewModel(get(), get(), get()) }
+    viewModel { CareRequestListViewModel(get(), get()) }
     viewModel { CaregiverRegistrationViewModel(get(), get()) }
     viewModel { ProfileViewModel(get(), get()) }
 }

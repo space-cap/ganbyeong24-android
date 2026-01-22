@@ -16,6 +16,7 @@ import com.ezlevup.ganbyeong24.data.repository.AuthRepository
 import com.ezlevup.ganbyeong24.presentation.screens.auth.LoginScreen
 import com.ezlevup.ganbyeong24.presentation.screens.auth.SignupScreen
 import com.ezlevup.ganbyeong24.presentation.screens.care_request.CareRequestScreen
+import com.ezlevup.ganbyeong24.presentation.screens.care_request_list.CareRequestListScreen
 import com.ezlevup.ganbyeong24.presentation.screens.caregiver.CaregiverRegistrationScreen
 import com.ezlevup.ganbyeong24.presentation.screens.result.ResultScreen
 import com.ezlevup.ganbyeong24.presentation.screens.role.RoleSelectionScreen
@@ -86,7 +87,8 @@ fun GanbyeongNavGraph(
                     onCaregiverSelected = {
                         navController.navigate(Screen.CaregiverRegistration.route)
                     },
-                    onNavigateToProfile = { navController.navigate(Screen.Profile.route) }
+                    onNavigateToProfile = { navController.navigate(Screen.Profile.route) },
+                    onViewMyRequests = { navController.navigate(Screen.CareRequestList.route) }
             )
         }
 
@@ -112,6 +114,11 @@ fun GanbyeongNavGraph(
                         }
                     }
             )
+        }
+
+        // 간병 신청 목록 화면
+        composable(Screen.CareRequestList.route) {
+            CareRequestListScreen(onNavigateBack = { navController.popBackStack() })
         }
 
         // 프로필/설정 화면
