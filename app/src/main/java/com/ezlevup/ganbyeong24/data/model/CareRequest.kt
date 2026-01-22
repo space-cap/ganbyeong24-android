@@ -17,6 +17,7 @@ import com.google.firebase.Timestamp
  * @property location 간병 위치
  * @property patientPhoneNumber 환자 연락처 (선택)
  * @property guardianPhoneNumber 보호자 연락처 (필수)
+ * @property caregiverPhotoBase64 간병사 사진 Base64 인코딩 문자열 (선택)
  * @property status 신청 상태 (pending, approved, rejected)
  * @property createdAt 생성 시간
  */
@@ -31,6 +32,7 @@ data class CareRequest(
         val location: String = "",
         val patientPhoneNumber: String? = null,
         val guardianPhoneNumber: String = "",
+        val caregiverPhotoBase64: String? = null,
         val status: String = "pending",
         val createdAt: Timestamp = Timestamp.now()
 )

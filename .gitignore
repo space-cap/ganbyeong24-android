@@ -9,6 +9,14 @@
 .cxx
 /google-services.json
 
+# Firebase Service Account Keys (DO NOT COMMIT)
+firebase-service-account.json
+*service-account*.json
+firebase-adminsdk*.json
+.env
+.env.local
+.mcp-config.json
+
 # Built artifacts
 bin/
 gen/

@@ -40,4 +40,18 @@ interface AuthRepository {
      * @return 로그인 여부
      */
     fun isLoggedIn(): Boolean
+
+    /**
+     * 현재 로그인한 사용자의 이메일을 반환합니다.
+     *
+     * @return 사용자 이메일, 로그인하지 않은 경우 null
+     */
+    fun getCurrentUserEmail(): String?
+
+    /**
+     * 현재 로그인한 사용자의 Firebase Auth 계정을 삭제합니다.
+     *
+     * @return Result<Unit> 성공 또는 실패
+     */
+    suspend fun deleteAccount(): Result<Unit>
 }
