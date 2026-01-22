@@ -11,7 +11,7 @@ package com.ezlevup.ganbyeong24.presentation.screens.caregiver
  * @property name 이름
  * @property gender 성별
  * @property experience 경력
- * @property certificates 자격증
+ * @property certificates 자격증 목록
  * @property availableRegions 가능 지역
  * @property phoneNumber 연락처
  * @property photoUri 프로필 사진 Uri (로컬)
@@ -30,7 +30,7 @@ data class CaregiverRegistrationState(
         val name: String = "",
         val gender: String = "",
         val experience: String = "",
-        val certificates: String = "",
+        val certificates: List<String> = emptyList(),
         val availableRegions: String = "",
         val phoneNumber: String = "",
         val photoUri: android.net.Uri? = null,

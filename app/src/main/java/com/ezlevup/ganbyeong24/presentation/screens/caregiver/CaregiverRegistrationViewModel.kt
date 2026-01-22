@@ -44,8 +44,16 @@ class CaregiverRegistrationViewModel(
         _state.update { it.copy(experience = experience, experienceError = null) }
     }
 
-    fun onCertificatesChange(certificates: String) {
-        _state.update { it.copy(certificates = certificates, certificatesError = null) }
+    fun onCertificateToggle(certificate: String) {
+        _state.update { currentState ->
+            val updatedCertificates =
+                    if (currentState.certificates.contains(certificate)) {
+                        currentState.certificates - certificate
+                    } else {
+                        currentState.certificates + certificate
+                    }
+            currentState.copy(certificates = updatedCertificates, certificatesError = null)
+        }
     }
 
     fun onAvailableRegionsChange(regions: String) {
@@ -137,8 +145,8 @@ class CaregiverRegistrationViewModel(
         }
 
         // 자격증 검증
-        if (_state.value.certificates.isBlank()) {
-            errors["certificates"] = "자격증을 입력해주세요"
+        if (_state.value.certificates.isEmpty()) {
+            errors["certificates"] = "자격증을 선택해주세요"
         }
 
         // 가능 지역 검증

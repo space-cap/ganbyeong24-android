@@ -12,7 +12,7 @@ import com.google.firebase.Timestamp
  * @property name 이름
  * @property gender 성별 (남성, 여성)
  * @property experience 경력
- * @property certificates 자격증
+ * @property certificates 자격증 목록
  * @property availableRegions 가능 지역
  * @property phoneNumber 연락처
  * @property photoBase64 프로필 사진 Base64 인코딩 문자열
@@ -25,7 +25,7 @@ data class Caregiver(
         val name: String = "",
         val gender: String = "",
         val experience: String = "",
-        val certificates: String = "",
+        val certificates: List<String> = emptyList(),
         val availableRegions: String = "",
         val phoneNumber: String = "",
         val photoBase64: String? = null,

@@ -14,6 +14,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -311,16 +312,84 @@ fun CaregiverRegistrationScreen(
                                 }
                         }
 
-                        // 자격증
-                        GanbyeongTextField(
-                                value = state.certificates,
-                                onValueChange = viewModel::onCertificatesChange,
-                                label = "자격증 *",
-                                placeholder = "예: 요양보호사",
-                                isError = state.certificatesError != null,
-                                errorMessage = state.certificatesError,
-                                modifier = Modifier.padding(bottom = 16.dp)
-                        )
+                        // 자격증 (칩 선택)
+                        val certificateOptions =
+                                listOf("요양보호사", "간호사", "간호조무사", "물리치료사", "사회복지사", "기타")
+
+                        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+                                Text(
+                                        text = "자격증 * (복수 선택 가능)",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color =
+                                                if (state.certificatesError != null)
+                                                        MaterialTheme.colorScheme.error
+                                                else MaterialTheme.colorScheme.onSurface,
+                                        modifier = Modifier.padding(bottom = 8.dp)
+                                )
+
+                                // 칩 그리드
+                                FlowRow(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                        certificateOptions.forEach { certificate ->
+                                                FilterChip(
+                                                        selected =
+                                                                state.certificates.contains(
+                                                                        certificate
+                                                                ),
+                                                        onClick = {
+                                                                viewModel.onCertificateToggle(
+                                                                        certificate
+                                                                )
+                                                        },
+                                                        label = { Text(certificate) },
+                                                        leadingIcon =
+                                                                if (state.certificates.contains(
+                                                                                certificate
+                                                                        )
+                                                                ) {
+                                                                        {
+                                                                                Icon(
+                                                                                        imageVector =
+                                                                                                Icons.Default
+                                                                                                        .Check,
+                                                                                        contentDescription =
+                                                                                                "선택됨",
+                                                                                        modifier =
+                                                                                                Modifier.size(
+                                                                                                        18.dp
+                                                                                                )
+                                                                                )
+                                                                        }
+                                                                } else null
+                                                )
+                                        }
+                                }
+
+                                // 선택된 자격증 표시
+                                if (state.certificates.isNotEmpty()) {
+                                        Text(
+                                                text =
+                                                        "선택됨: ${state.certificates.joinToString(", ")}",
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.primary,
+                                                modifier = Modifier.padding(top = 8.dp)
+                                        )
+                                }
+
+                                // 에러 메시지
+                                if (state.certificatesError != null) {
+                                        Text(
+                                                text = state.certificatesError!!,
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.error,
+                                                modifier =
+                                                        Modifier.padding(top = 4.dp, start = 16.dp)
+                                        )
+                                }
+                        }
 
                         // 가능 지역
                         GanbyeongTextField(
@@ -444,7 +513,7 @@ private fun CaregiverRegistrationScreenContent(
                         )
 
                         GanbyeongTextField(
-                                value = state.certificates,
+                                value = state.certificates.toString(),
                                 onValueChange = onCertificatesChange,
                                 label = "자격증 *",
                                 placeholder = "예: 요양보호사",
