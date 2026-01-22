@@ -56,8 +56,16 @@ class CaregiverRegistrationViewModel(
         }
     }
 
-    fun onAvailableRegionsChange(regions: String) {
-        _state.update { it.copy(availableRegions = regions, availableRegionsError = null) }
+    fun onRegionToggle(region: String) {
+        _state.update { currentState ->
+            val updatedRegions =
+                    if (currentState.availableRegions.contains(region)) {
+                        currentState.availableRegions - region
+                    } else {
+                        currentState.availableRegions + region
+                    }
+            currentState.copy(availableRegions = updatedRegions, availableRegionsError = null)
+        }
     }
 
     fun onPhoneNumberChange(phoneNumber: String) {
@@ -150,8 +158,8 @@ class CaregiverRegistrationViewModel(
         }
 
         // 가능 지역 검증
-        if (_state.value.availableRegions.isBlank()) {
-            errors["availableRegions"] = "가능 지역을 입력해주세요"
+        if (_state.value.availableRegions.isEmpty()) {
+            errors["availableRegions"] = "가능 지역을 선택해주세요"
         }
 
         // 연락처 검증

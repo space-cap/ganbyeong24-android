@@ -391,16 +391,100 @@ fun CaregiverRegistrationScreen(
                                 }
                         }
 
-                        // 가능 지역
-                        GanbyeongTextField(
-                                value = state.availableRegions,
-                                onValueChange = viewModel::onAvailableRegionsChange,
-                                label = "가능 지역 *",
-                                placeholder = "예: 서울, 경기",
-                                isError = state.availableRegionsError != null,
-                                errorMessage = state.availableRegionsError,
-                                modifier = Modifier.padding(bottom = 16.dp)
-                        )
+                        // 가능 지역 (칩 선택)
+                        val regionOptions =
+                                listOf(
+                                        "서울",
+                                        "경기",
+                                        "인천",
+                                        "부산",
+                                        "대구",
+                                        "대전",
+                                        "광주",
+                                        "울산",
+                                        "세종",
+                                        "강원",
+                                        "충북",
+                                        "충남",
+                                        "전북",
+                                        "전남",
+                                        "경북",
+                                        "경남",
+                                        "제주"
+                                )
+
+                        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+                                Text(
+                                        text = "가능 지역 * (복수 선택 가능)",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color =
+                                                if (state.availableRegionsError != null)
+                                                        MaterialTheme.colorScheme.error
+                                                else MaterialTheme.colorScheme.onSurface,
+                                        modifier = Modifier.padding(bottom = 8.dp)
+                                )
+
+                                // 칩 그리드
+                                FlowRow(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                        regionOptions.forEach { region ->
+                                                FilterChip(
+                                                        selected =
+                                                                state.availableRegions.contains(
+                                                                        region
+                                                                ),
+                                                        onClick = {
+                                                                viewModel.onRegionToggle(region)
+                                                        },
+                                                        label = { Text(region) },
+                                                        leadingIcon =
+                                                                if (state.availableRegions.contains(
+                                                                                region
+                                                                        )
+                                                                ) {
+                                                                        {
+                                                                                Icon(
+                                                                                        imageVector =
+                                                                                                Icons.Default
+                                                                                                        .Check,
+                                                                                        contentDescription =
+                                                                                                "선택됨",
+                                                                                        modifier =
+                                                                                                Modifier.size(
+                                                                                                        18.dp
+                                                                                                )
+                                                                                )
+                                                                        }
+                                                                } else null
+                                                )
+                                        }
+                                }
+
+                                // 선택된 지역 표시
+                                if (state.availableRegions.isNotEmpty()) {
+                                        Text(
+                                                text =
+                                                        "선택됨: ${state.availableRegions.joinToString(", ")}",
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.primary,
+                                                modifier = Modifier.padding(top = 8.dp)
+                                        )
+                                }
+
+                                // 에러 메시지
+                                if (state.availableRegionsError != null) {
+                                        Text(
+                                                text = state.availableRegionsError!!,
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.error,
+                                                modifier =
+                                                        Modifier.padding(top = 4.dp, start = 16.dp)
+                                        )
+                                }
+                        }
 
                         // 연락처
                         GanbyeongTextField(
@@ -523,7 +607,7 @@ private fun CaregiverRegistrationScreenContent(
                         )
 
                         GanbyeongTextField(
-                                value = state.availableRegions,
+                                value = state.availableRegions.toString(),
                                 onValueChange = onAvailableRegionsChange,
                                 label = "가능 지역 *",
                                 placeholder = "예: 서울, 경기",

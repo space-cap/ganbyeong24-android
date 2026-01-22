@@ -12,7 +12,7 @@ package com.ezlevup.ganbyeong24.presentation.screens.caregiver
  * @property gender 성별
  * @property experience 경력
  * @property certificates 자격증 목록
- * @property availableRegions 가능 지역
+ * @property availableRegions 가능 지역 목록
  * @property phoneNumber 연락처
  * @property photoUri 프로필 사진 Uri (로컬)
  * @property photoBase64 프로필 사진 Base64 인코딩 문자열
@@ -31,7 +31,7 @@ data class CaregiverRegistrationState(
         val gender: String = "",
         val experience: String = "",
         val certificates: List<String> = emptyList(),
-        val availableRegions: String = "",
+        val availableRegions: List<String> = emptyList(),
         val phoneNumber: String = "",
         val photoUri: android.net.Uri? = null,
         val photoBase64: String? = null,
