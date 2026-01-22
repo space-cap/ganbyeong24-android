@@ -25,6 +25,8 @@ data class CareRequest(
         val id: String = "",
         val userId: String = "",
         val patientName: String = "",
+        val patientAge: Int = 0,
+        val patientGender: String = "",
         val guardianName: String = "",
         val patientCondition: String = "",
         val careStartDate: String = "",

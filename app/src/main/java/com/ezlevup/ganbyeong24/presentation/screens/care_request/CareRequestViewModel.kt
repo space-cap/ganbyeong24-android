@@ -64,6 +64,15 @@ class CareRequestViewModel(
         _state.update { it.copy(patientName = name, patientNameError = null) }
     }
 
+    fun onPatientAgeChange(age: String) {
+        val digitsOnly = age.filter { it.isDigit() }.take(3)
+        _state.update { it.copy(patientAge = digitsOnly, patientAgeError = null) }
+    }
+
+    fun onPatientGenderChange(gender: String) {
+        _state.update { it.copy(patientGender = gender, patientGenderError = null) }
+    }
+
     fun onGuardianNameChange(name: String) {
         _state.update { it.copy(guardianName = name, guardianNameError = null) }
     }
@@ -156,6 +165,8 @@ class CareRequestViewModel(
                     CareRequest(
                             userId = userId,
                             patientName = _state.value.patientName,
+                            patientAge = _state.value.patientAge.toIntOrNull() ?: 0,
+                            patientGender = _state.value.patientGender,
                             guardianName = _state.value.guardianName,
                             patientCondition = _state.value.patientCondition,
                             careStartDate = _state.value.careStartDate,
@@ -215,6 +226,15 @@ class CareRequestViewModel(
             errors["patientName"] = "환자명은 2자 이상 입력해주세요"
         }
 
+        val age = _state.value.patientAge.toIntOrNull()
+        if (age == null || age < 1 || age > 120) {
+            errors["patientAge"] = "올바른 나이를 입력해주세요 (1-120)"
+        }
+
+        if (_state.value.patientGender.isBlank()) {
+            errors["patientGender"] = "환자 성별을 선택해주세요"
+        }
+
         if (_state.value.patientCondition.isBlank()) {
             errors["patientCondition"] = "환자 상태를 선택해주세요"
         }
@@ -222,6 +242,8 @@ class CareRequestViewModel(
         _state.update {
             it.copy(
                     patientNameError = errors["patientName"],
+                    patientAgeError = errors["patientAge"],
+                    patientGenderError = errors["patientGender"],
                     patientConditionError = errors["patientCondition"]
             )
         }

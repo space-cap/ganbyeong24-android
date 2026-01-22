@@ -91,6 +91,9 @@ fun CareRequestScreen(
                                                 recentPatients = recentPatients,
                                                 onPatientNameChange =
                                                         viewModel::onPatientNameChange,
+                                                onPatientAgeChange = viewModel::onPatientAgeChange,
+                                                onPatientGenderChange =
+                                                        viewModel::onPatientGenderChange,
                                                 onPatientConditionChange =
                                                         viewModel::onPatientConditionChange,
                                                 onRecentPatientRemoved =
@@ -183,6 +186,8 @@ private fun Step1Content(
         state: CareRequestState,
         recentPatients: List<String>,
         onPatientNameChange: (String) -> Unit,
+        onPatientAgeChange: (String) -> Unit,
+        onPatientGenderChange: (String) -> Unit,
         onPatientConditionChange: (String) -> Unit,
         onRecentPatientRemoved: (String) -> Unit
 ) {
@@ -212,6 +217,26 @@ private fun Step1Content(
                         textStyle = LocalTextStyle.current.copy(fontSize = 20.sp)
                 )
 
+                // 환자 나이
+                GanbyeongTextField(
+                        value = state.patientAge,
+                        onValueChange = onPatientAgeChange,
+                        label = "환자 나이 *",
+                        placeholder = "예: 75",
+                        isError = state.patientAgeError != null,
+                        errorMessage = state.patientAgeError,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        textStyle = LocalTextStyle.current.copy(fontSize = 20.sp)
+                )
+
+                // 환자 성별
+                GenderSelector(
+                        selectedGender = state.patientGender,
+                        onGenderSelected = onPatientGenderChange,
+                        isError = state.patientGenderError != null,
+                        errorMessage = state.patientGenderError
+                )
+
                 // 환자 상태 선택
                 PatientConditionSelector(
                         selectedCondition = state.patientCondition,
@@ -221,6 +246,60 @@ private fun Step1Content(
                 if (state.patientConditionError != null) {
                         Text(
                                 text = state.patientConditionError,
+                                color = MaterialTheme.colorScheme.error,
+                                fontSize = 16.sp
+                        )
+                }
+        }
+}
+
+// ========== Gender Selector ==========
+
+@Composable
+private fun GenderSelector(
+        selectedGender: String,
+        onGenderSelected: (String) -> Unit,
+        isError: Boolean = false,
+        errorMessage: String? = null
+) {
+        Column {
+                Text(text = "환자 성별 *", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                        OutlinedButton(
+                                onClick = { onGenderSelected("남성") },
+                                modifier = Modifier.weight(1f).height(56.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                colors =
+                                        ButtonDefaults.outlinedButtonColors(
+                                                containerColor =
+                                                        if (selectedGender == "남성")
+                                                                MaterialTheme.colorScheme
+                                                                        .primaryContainer
+                                                        else MaterialTheme.colorScheme.surface
+                                        )
+                        ) { Text("남성", fontSize = 20.sp, fontWeight = FontWeight.Bold) }
+                        OutlinedButton(
+                                onClick = { onGenderSelected("여성") },
+                                modifier = Modifier.weight(1f).height(56.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                colors =
+                                        ButtonDefaults.outlinedButtonColors(
+                                                containerColor =
+                                                        if (selectedGender == "여성")
+                                                                MaterialTheme.colorScheme
+                                                                        .primaryContainer
+                                                        else MaterialTheme.colorScheme.surface
+                                        )
+                        ) { Text("여성", fontSize = 20.sp, fontWeight = FontWeight.Bold) }
+                }
+                if (isError && errorMessage != null) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                                text = errorMessage,
                                 color = MaterialTheme.colorScheme.error,
                                 fontSize = 16.sp
                         )
@@ -345,6 +424,8 @@ private fun Step1Preview() {
                                         ),
                                 recentPatients = listOf("김철수", "이영희"),
                                 onPatientNameChange = {},
+                                onPatientAgeChange = {},
+                                onPatientGenderChange = {},
                                 onPatientConditionChange = {},
                                 onRecentPatientRemoved = {}
                         )
