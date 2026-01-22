@@ -10,6 +10,7 @@ import com.google.firebase.Timestamp
  * @property id Firestore 문서 ID
  * @property userId 사용자 ID (Firebase Auth)
  * @property name 이름
+ * @property gender 성별 (남성, 여성)
  * @property experience 경력
  * @property certificates 자격증
  * @property availableRegions 가능 지역
@@ -22,6 +23,7 @@ data class Caregiver(
         val id: String = "",
         val userId: String = "",
         val name: String = "",
+        val gender: String = "",
         val experience: String = "",
         val certificates: String = "",
         val availableRegions: String = "",

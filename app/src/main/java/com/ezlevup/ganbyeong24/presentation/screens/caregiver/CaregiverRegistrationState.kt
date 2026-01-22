@@ -9,6 +9,7 @@ package com.ezlevup.ganbyeong24.presentation.screens.caregiver
  * @property isSuccess 등록 성공 여부
  * @property errorMessage 에러 메시지
  * @property name 이름
+ * @property gender 성별
  * @property experience 경력
  * @property certificates 자격증
  * @property availableRegions 가능 지역
@@ -16,6 +17,7 @@ package com.ezlevup.ganbyeong24.presentation.screens.caregiver
  * @property photoUri 프로필 사진 Uri (로컬)
  * @property photoBase64 프로필 사진 Base64 인코딩 문자열
  * @property nameError 이름 에러 메시지
+ * @property genderError 성별 에러 메시지
  * @property experienceError 경력 에러 메시지
  * @property certificatesError 자격증 에러 메시지
  * @property availableRegionsError 가능 지역 에러 메시지
@@ -26,6 +28,7 @@ data class CaregiverRegistrationState(
         val isSuccess: Boolean = false,
         val errorMessage: String? = null,
         val name: String = "",
+        val gender: String = "",
         val experience: String = "",
         val certificates: String = "",
         val availableRegions: String = "",
@@ -33,6 +36,7 @@ data class CaregiverRegistrationState(
         val photoUri: android.net.Uri? = null,
         val photoBase64: String? = null,
         val nameError: String? = null,
+        val genderError: String? = null,
         val experienceError: String? = null,
         val certificatesError: String? = null,
         val availableRegionsError: String? = null,

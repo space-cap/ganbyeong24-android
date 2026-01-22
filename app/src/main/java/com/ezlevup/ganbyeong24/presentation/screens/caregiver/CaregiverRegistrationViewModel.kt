@@ -36,6 +36,10 @@ class CaregiverRegistrationViewModel(
         _state.update { it.copy(name = name, nameError = null) }
     }
 
+    fun onGenderChange(gender: String) {
+        _state.update { it.copy(gender = gender, genderError = null) }
+    }
+
     fun onExperienceChange(experience: String) {
         _state.update { it.copy(experience = experience, experienceError = null) }
     }
@@ -84,6 +88,7 @@ class CaregiverRegistrationViewModel(
                     Caregiver(
                             userId = userId,
                             name = _state.value.name,
+                            gender = _state.value.gender,
                             experience = _state.value.experience,
                             certificates = _state.value.certificates,
                             availableRegions = _state.value.availableRegions,
@@ -121,6 +126,11 @@ class CaregiverRegistrationViewModel(
             errors["name"] = "이름은 2자 이상 입력해주세요"
         }
 
+        // 성별 검증
+        if (_state.value.gender.isBlank()) {
+            errors["gender"] = "성별을 선택해주세요"
+        }
+
         // 경력 검증
         if (_state.value.experience.isBlank()) {
             errors["experience"] = "경력을 입력해주세요"
@@ -147,6 +157,7 @@ class CaregiverRegistrationViewModel(
         _state.update {
             it.copy(
                     nameError = errors["name"],
+                    genderError = errors["gender"],
                     experienceError = errors["experience"],
                     certificatesError = errors["certificates"],
                     availableRegionsError = errors["availableRegions"],

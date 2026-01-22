@@ -3,6 +3,7 @@ package com.ezlevup.ganbyeong24.presentation.screens.caregiver
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,6 +20,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
@@ -150,6 +152,103 @@ fun CaregiverRegistrationScreen(
                                 errorMessage = state.nameError,
                                 modifier = Modifier.padding(bottom = 16.dp)
                         )
+
+                        // 성별
+                        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+                                Text(
+                                        text = "성별 *",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color =
+                                                if (state.genderError != null)
+                                                        MaterialTheme.colorScheme.error
+                                                else MaterialTheme.colorScheme.onSurface,
+                                        modifier = Modifier.padding(bottom = 8.dp)
+                                )
+
+                                Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                        // 남성 버튼
+                                        OutlinedButton(
+                                                onClick = { viewModel.onGenderChange("남성") },
+                                                modifier = Modifier.weight(1f),
+                                                colors =
+                                                        ButtonDefaults.outlinedButtonColors(
+                                                                containerColor =
+                                                                        if (state.gender == "남성")
+                                                                                MaterialTheme
+                                                                                        .colorScheme
+                                                                                        .primaryContainer
+                                                                        else Color.Transparent,
+                                                                contentColor =
+                                                                        if (state.gender == "남성")
+                                                                                MaterialTheme
+                                                                                        .colorScheme
+                                                                                        .onPrimaryContainer
+                                                                        else
+                                                                                MaterialTheme
+                                                                                        .colorScheme
+                                                                                        .onSurface
+                                                        ),
+                                                border =
+                                                        BorderStroke(
+                                                                1.dp,
+                                                                if (state.gender == "남성")
+                                                                        MaterialTheme.colorScheme
+                                                                                .primary
+                                                                else
+                                                                        MaterialTheme.colorScheme
+                                                                                .outline
+                                                        )
+                                        ) { Text("남성") }
+
+                                        // 여성 버튼
+                                        OutlinedButton(
+                                                onClick = { viewModel.onGenderChange("여성") },
+                                                modifier = Modifier.weight(1f),
+                                                colors =
+                                                        ButtonDefaults.outlinedButtonColors(
+                                                                containerColor =
+                                                                        if (state.gender == "여성")
+                                                                                MaterialTheme
+                                                                                        .colorScheme
+                                                                                        .primaryContainer
+                                                                        else Color.Transparent,
+                                                                contentColor =
+                                                                        if (state.gender == "여성")
+                                                                                MaterialTheme
+                                                                                        .colorScheme
+                                                                                        .onPrimaryContainer
+                                                                        else
+                                                                                MaterialTheme
+                                                                                        .colorScheme
+                                                                                        .onSurface
+                                                        ),
+                                                border =
+                                                        BorderStroke(
+                                                                1.dp,
+                                                                if (state.gender == "여성")
+                                                                        MaterialTheme.colorScheme
+                                                                                .primary
+                                                                else
+                                                                        MaterialTheme.colorScheme
+                                                                                .outline
+                                                        )
+                                        ) { Text("여성") }
+                                }
+
+                                // 에러 메시지
+                                if (state.genderError != null) {
+                                        Text(
+                                                text = state.genderError!!,
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.error,
+                                                modifier =
+                                                        Modifier.padding(top = 4.dp, start = 16.dp)
+                                        )
+                                }
+                        }
 
                         // 경력
                         GanbyeongTextField(
