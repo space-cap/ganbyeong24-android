@@ -20,7 +20,7 @@ object ImageUtils {
     /**
      * Uri를 Base64 문자열로 변환합니다.
      *
-     * 이미지를 300x300px로 리사이즈하고 JPEG 압축(품질 80%)을 적용하여 Firestore 문서 크기 제한(1MB) 내에서 저장할 수 있도록 최적화합니다.
+     * 이미지를 200x200px로 리사이즈하고 JPEG 압축(품질 80%)을 적용하여 Firestore 문서 크기 제한(1MB) 내에서 저장할 수 있도록 최적화합니다.
      *
      * @param context Android Context
      * @param uri 이미지 Uri
@@ -40,7 +40,7 @@ object ImageUtils {
             val rotatedBitmap = rotateImageIfRequired(context, bitmap, uri)
 
             // 리사이즈 및 압축
-            val optimizedBitmap = resizeAndCompressImage(rotatedBitmap, 300, 300)
+            val optimizedBitmap = resizeAndCompressImage(rotatedBitmap, 200, 200)
 
             // Base64 인코딩
             bitmapToBase64(optimizedBitmap)
