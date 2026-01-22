@@ -1,11 +1,14 @@
 package com.ezlevup.ganbyeong24.presentation.screens.care_request
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ezlevup.ganbyeong24.data.model.CareRequest
 import com.ezlevup.ganbyeong24.data.repository.AuthRepository
 import com.ezlevup.ganbyeong24.data.repository.CareRequestRepository
 import com.ezlevup.ganbyeong24.data.repository.RecentPatientRepository
+import com.ezlevup.ganbyeong24.util.ImageUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -123,6 +126,21 @@ class CareRequestViewModel(
         _state.update { it.copy(guardianPhoneNumber = digitsOnly, guardianPhoneNumberError = null) }
     }
 
+    /**
+     * 사진 선택 핸들러
+     *
+     * 선택된 사진을 Base64로 인코딩하여 상태에 저장합니다.
+     *
+     * @param uri 선택된 사진의 Uri
+     * @param context Android Context
+     */
+    fun onPhotoSelected(uri: Uri, context: Context) {
+        viewModelScope.launch {
+            val base64String = ImageUtils.uriToBase64(context, uri)
+            _state.update { it.copy(caregiverPhotoUri = uri, caregiverPhotoBase64 = base64String) }
+        }
+    }
+
     // ========== 신청 처리 ==========
 
     /** 간병 신청을 제출합니다. */
@@ -145,6 +163,7 @@ class CareRequestViewModel(
                             location = _state.value.location,
                             patientPhoneNumber = _state.value.patientPhoneNumber.ifBlank { null },
                             guardianPhoneNumber = _state.value.guardianPhoneNumber,
+                            caregiverPhotoBase64 = _state.value.caregiverPhotoBase64,
                             status = "pending"
                     )
 

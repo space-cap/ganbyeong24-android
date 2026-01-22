@@ -19,6 +19,8 @@ package com.ezlevup.ganbyeong24.presentation.screens.care_request
  * @property location 위치 (city + district 조합)
  * @property patientPhoneNumber 환자 연락처
  * @property guardianPhoneNumber 보호자 연락처
+ * @property caregiverPhotoUri 간병사 사진 Uri (로컬)
+ * @property caregiverPhotoBase64 간병사 사진 Base64 인코딩 문자열
  * @property patientNameError 환자명 에러 메시지
  * @property guardianNameError 보호자명 에러 메시지
  * @property patientConditionError 환자 상태 에러 메시지
@@ -42,6 +44,8 @@ data class CareRequestState(
         val location: String = "",
         val patientPhoneNumber: String = "",
         val guardianPhoneNumber: String = "",
+        val caregiverPhotoUri: android.net.Uri? = null,
+        val caregiverPhotoBase64: String? = null,
         val patientNameError: String? = null,
         val guardianNameError: String? = null,
         val patientConditionError: String? = null,

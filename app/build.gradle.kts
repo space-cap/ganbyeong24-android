@@ -88,4 +88,10 @@ dependencies {
     
     // Material Icons Extended
     implementation("androidx.compose.material:material-icons-extended:1.7.6")
+    
+    // Coil for Image Loading
+    implementation("io.coil-kt:coil-compose:2.5.0")
+    
+    // Accompanist Permissions
+    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
 }

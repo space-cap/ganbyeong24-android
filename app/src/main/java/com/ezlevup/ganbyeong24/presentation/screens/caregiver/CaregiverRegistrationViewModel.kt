@@ -1,10 +1,13 @@
 package com.ezlevup.ganbyeong24.presentation.screens.caregiver
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ezlevup.ganbyeong24.data.model.Caregiver
 import com.ezlevup.ganbyeong24.data.repository.AuthRepository
 import com.ezlevup.ganbyeong24.data.repository.CaregiverRepository
+import com.ezlevup.ganbyeong24.util.ImageUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,7 +49,24 @@ class CaregiverRegistrationViewModel(
     }
 
     fun onPhoneNumberChange(phoneNumber: String) {
-        _state.update { it.copy(phoneNumber = phoneNumber, phoneNumberError = null) }
+        // 숫자만 추출하여 저장
+        val digitsOnly = phoneNumber.filter { it.isDigit() }.take(11)
+        _state.update { it.copy(phoneNumber = digitsOnly, phoneNumberError = null) }
+    }
+
+    /**
+     * 사진 선택 핸들러
+     *
+     * 선택된 사진을 Base64로 인코딩하여 상태에 저장합니다.
+     *
+     * @param uri 선택된 사진의 Uri
+     * @param context Android Context
+     */
+    fun onPhotoSelected(uri: Uri, context: Context) {
+        viewModelScope.launch {
+            val base64String = ImageUtils.uriToBase64(context, uri)
+            _state.update { it.copy(photoUri = uri, photoBase64 = base64String) }
+        }
     }
 
     // ========== 등록 처리 ==========
@@ -68,6 +88,7 @@ class CaregiverRegistrationViewModel(
                             certificates = _state.value.certificates,
                             availableRegions = _state.value.availableRegions,
                             phoneNumber = _state.value.phoneNumber,
+                            photoBase64 = _state.value.photoBase64,
                             status = "pending"
                     )
 
