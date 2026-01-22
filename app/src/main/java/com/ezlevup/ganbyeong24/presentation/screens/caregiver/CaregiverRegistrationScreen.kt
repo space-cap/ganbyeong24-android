@@ -250,16 +250,66 @@ fun CaregiverRegistrationScreen(
                                 }
                         }
 
-                        // 경력
-                        GanbyeongTextField(
-                                value = state.experience,
-                                onValueChange = viewModel::onExperienceChange,
-                                label = "경력 *",
-                                placeholder = "예: 5년",
-                                isError = state.experienceError != null,
-                                errorMessage = state.experienceError,
-                                modifier = Modifier.padding(bottom = 16.dp)
-                        )
+                        // 경력 (드롭다운)
+                        var experienceExpanded by remember { mutableStateOf(false) }
+                        val experienceOptions = listOf("1년 미만", "1~3년", "3~5년", "5~10년", "10년 이상")
+
+                        Column(modifier = Modifier.padding(bottom = 16.dp)) {
+                                ExposedDropdownMenuBox(
+                                        expanded = experienceExpanded,
+                                        onExpandedChange = { experienceExpanded = it }
+                                ) {
+                                        OutlinedTextField(
+                                                value = state.experience,
+                                                onValueChange = {},
+                                                readOnly = true,
+                                                label = { Text("경력 *") },
+                                                placeholder = { Text("선택해주세요") },
+                                                trailingIcon = {
+                                                        ExposedDropdownMenuDefaults.TrailingIcon(
+                                                                expanded = experienceExpanded
+                                                        )
+                                                },
+                                                isError = state.experienceError != null,
+                                                colors =
+                                                        ExposedDropdownMenuDefaults
+                                                                .outlinedTextFieldColors(),
+                                                modifier = Modifier.menuAnchor().fillMaxWidth()
+                                        )
+
+                                        ExposedDropdownMenu(
+                                                expanded = experienceExpanded,
+                                                onDismissRequest = { experienceExpanded = false }
+                                        ) {
+                                                experienceOptions.forEach { option ->
+                                                        DropdownMenuItem(
+                                                                text = { Text(option) },
+                                                                onClick = {
+                                                                        viewModel
+                                                                                .onExperienceChange(
+                                                                                        option
+                                                                                )
+                                                                        experienceExpanded = false
+                                                                },
+                                                                contentPadding =
+                                                                        ExposedDropdownMenuDefaults
+                                                                                .ItemContentPadding
+                                                        )
+                                                }
+                                        }
+                                }
+
+                                // 에러 메시지
+                                if (state.experienceError != null) {
+                                        Text(
+                                                text = state.experienceError!!,
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.error,
+                                                modifier =
+                                                        Modifier.padding(top = 4.dp, start = 16.dp)
+                                        )
+                                }
+                        }
 
                         // 자격증
                         GanbyeongTextField(
