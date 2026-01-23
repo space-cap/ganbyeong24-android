@@ -3,6 +3,8 @@ package com.ezlevup.ganbyeong24.presentation.screens.admin.match
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
@@ -303,7 +305,9 @@ fun Step3Confirm(
         notes: String,
         onNotesChange: (String) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState())) {
+    val scrollState = rememberScrollState()
+
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(scrollState)) {
         Text("매칭 확인", style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -394,9 +398,3 @@ fun SuccessScreen(matchSerialNumber: Long) {
         )
     }
 }
-
-@Composable private fun rememberScrollState() = androidx.compose.foundation.rememberScrollState()
-
-@Composable
-private fun Modifier.verticalScroll(state: androidx.compose.foundation.ScrollState) =
-        this.then(androidx.compose.foundation.verticalScroll(state))
