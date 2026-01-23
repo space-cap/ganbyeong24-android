@@ -16,6 +16,7 @@ import com.ezlevup.ganbyeong24.data.repository.AuthRepository
 import com.ezlevup.ganbyeong24.presentation.screens.admin.AdminDashboardScreen
 import com.ezlevup.ganbyeong24.presentation.screens.admin.care_request.AdminCareRequestListScreen
 import com.ezlevup.ganbyeong24.presentation.screens.admin.caregiver.AdminCaregiverListScreen
+import com.ezlevup.ganbyeong24.presentation.screens.admin.match.MatchManagementScreen
 import com.ezlevup.ganbyeong24.presentation.screens.auth.LoginScreen
 import com.ezlevup.ganbyeong24.presentation.screens.auth.SignupScreen
 import com.ezlevup.ganbyeong24.presentation.screens.care_request.CareRequestScreen
@@ -128,6 +129,11 @@ fun GanbyeongNavGraph(
         // 관리자용 간볕사 목록 화면
         composable(Screen.AdminCaregiverList.route) {
             AdminCaregiverListScreen(onNavigateBack = { navController.popBackStack() })
+        }
+
+        // 매칭 관리 화면
+        composable(Screen.MatchManagement.route) {
+            MatchManagementScreen(onNavigateBack = { navController.popBackStack() })
         }
 
         // 간병 신청 화면

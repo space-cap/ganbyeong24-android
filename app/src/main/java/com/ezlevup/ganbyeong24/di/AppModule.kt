@@ -14,6 +14,7 @@ import com.ezlevup.ganbyeong24.data.repository.UserRepository
 import com.ezlevup.ganbyeong24.data.repository.UserRepositoryImpl
 import com.ezlevup.ganbyeong24.presentation.screens.admin.care_request.AdminCareRequestListViewModel
 import com.ezlevup.ganbyeong24.presentation.screens.admin.caregiver.AdminCaregiverListViewModel
+import com.ezlevup.ganbyeong24.presentation.screens.admin.match.MatchManagementViewModel
 import com.ezlevup.ganbyeong24.presentation.screens.auth.LoginViewModel
 import com.ezlevup.ganbyeong24.presentation.screens.auth.SignupViewModel
 import com.ezlevup.ganbyeong24.presentation.screens.care_request.CareRequestViewModel
@@ -60,4 +61,5 @@ val appModule = module {
     viewModel { ProfileViewModel(get(), get()) }
     viewModel { AdminCareRequestListViewModel(get()) }
     viewModel { AdminCaregiverListViewModel(get()) }
+    viewModel { MatchManagementViewModel(get(), get(), get()) }
 }

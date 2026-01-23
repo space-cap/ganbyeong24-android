@@ -39,6 +39,9 @@ sealed class Screen(val route: String) {
     /** 관리자용 간병사 목록 화면 모든 간병사 관리 */
     object AdminCaregiverList : Screen("admin_caregiver_list")
 
+    /** 매칭 관리 화면 간병 신청과 간병사 매칭 */
+    object MatchManagement : Screen("match_management")
+
     /**
      * 결과 화면 신청 또는 등록 완료 후 표시되는 화면
      *
