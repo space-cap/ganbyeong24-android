@@ -25,25 +25,42 @@
 ### 🔐 사용자 인증
 - Firebase Authentication 기반 이메일/비밀번호 로그인
 - 회원가입 및 로그인
+- 역할 기반 접근 제어 (보호자/간병사/관리자)
 - 로그아웃 및 회원 탈퇴 (Soft Delete)
 
 ### 👥 역할 선택
-- **보호자 모드**: 간병 서비스 신청
+- **보호자 모드**: 간병 서비스 신청 및 내역 조회
 - **간병사 모드**: 간병사 등록
+- **관리자 모드**: 전체 시스템 관리
 
 ### 📝 간병 신청 (보호자)
 - 환자 정보 입력 (이름, 나이, 성별)
 - 병원 및 병실 정보
 - 간병 시작일 및 기간 설정
 - 보호자 연락처 및 특이사항
+- 내 신청 내역 조회 (상태별 필터링)
 - Firebase Firestore에 실시간 저장
+- **SerialNumber 시스템**: 사람이 읽기 쉬운 신청 번호 (예: `100-0000-0001`)
 
 ### 👨‍⚕️ 간병사 등록
-- 간병사 정보 입력 (이름, 연락처)
-- 경력 및 자격증 정보
-- 가능 지역 및 희망 급여
-- 자기소개
+- 프로필 사진 업로드
+- 간병사 정보 입력 (이름, 성별, 연락처)
+- 경력 선택 (드롭다운)
+- 자격증 다중 선택 (칩)
+- 가능 지역 다중 선택 (칩)
+- 희망 급여 및 자기소개
 - Firebase Firestore에 실시간 저장
+- **SerialNumber 시스템**: 사람이 읽기 쉬운 간병사 번호 (예: `200-0000-0001`)
+
+### 👨‍💼 관리자 시스템
+- **간병 신청 관리**: 전체 신청 조회 및 상태별 필터링
+- **간병사 관리**: 전체 간병사 조회 및 다중 필터링 (지역/자격증/경력)
+- **매칭 관리**: 3단계 매칭 프로세스
+  - Step 1: 간병 신청 선택
+  - Step 2: 간병사 선택 (지역 기반 자동 필터링)
+  - Step 3: 매칭 확인 및 생성
+- **자동 상태 업데이트**: 매칭 생성 시 신청 상태 자동 변경
+- **SerialNumber 시스템**: 매칭 번호 (예: `300-0000-0001`)
 
 ### ⚙️ 프로필 관리
 - 사용자 정보 조회 (이메일, 가입일)
@@ -55,6 +72,7 @@
 - 큰 글씨 및 명확한 버튼
 - 직관적인 네비게이션
 - 접근성 고려 디자인
+- Material Design 3 적용
 
 ## 🛠 기술 스택
 
@@ -68,6 +86,8 @@
 - **Koin** - 의존성 주입 (DI)
 - **Kotlin Coroutines** - 비동기 처리
 - **Navigation Compose** - 화면 네비게이션
+- **Room Database** - 로컬 데이터 저장 (최근 환자 목록)
+- **Coil** - 이미지 로딩 라이브러리
 
 ### Backend & Database
 - **Firebase Authentication** - 사용자 인증
@@ -84,20 +104,34 @@
 ```
 app/src/main/java/com/ezlevup/ganbyeong24/
 ├── data/
-│   ├── model/              # 데이터 모델 (User, CareRequest, Caregiver)
+│   ├── model/              # 데이터 모델
+│   │   ├── User.kt         # 사용자 (role 필드 포함)
+│   │   ├── CareRequest.kt  # 간병 신청 (serialNumber 포함)
+│   │   ├── Caregiver.kt    # 간병사 (serialNumber 포함)
+│   │   └── Match.kt        # 매칭 (serialNumber 포함)
 │   └── repository/         # Repository 패턴 구현
 │       ├── AuthRepository
-│       └── UserRepository
+│       ├── CareRequestRepository
+│       ├── CaregiverRepository
+│       └── MatchRepository
 ├── di/
 │   └── AppModule.kt        # Koin DI 모듈
 ├── presentation/
 │   ├── navigation/         # Navigation Graph
+│   ├── components/         # 공통 UI 컴포넌트
 │   └── screens/
 │       ├── auth/           # 로그인/회원가입 화면
 │       ├── role/           # 역할 선택 화면
 │       ├── care_request/   # 간병 신청 화면
 │       ├── caregiver/      # 간병사 등록 화면
-│       └── profile/        # 프로필 화면
+│       ├── profile/        # 프로필 화면
+│       └── admin/          # 관리자 화면
+│           ├── AdminDashboardScreen.kt
+│           ├── care_request/  # 간병 신청 관리
+│           ├── caregiver/     # 간병사 관리
+│           └── match/         # 매칭 관리
+├── util/
+│   └── SerialNumberFormatter.kt  # 일련번호 포맷팅
 └── MainActivity.kt
 ```
 
@@ -171,33 +205,50 @@ Android Studio에서 프로젝트를 열고 Gradle 동기화를 기다립니다.
 
 | 컬렉션 | 설명 | 문서 |
 |--------|------|------|
-| `users` | 사용자 정보 (Soft Delete) | [User.md](docs/data-models/User.md) |
-| `care_requests` | 간병 신청 정보 | [CareRequest.md](docs/data-models/CareRequest.md) |
-| `caregivers` | 간병사 등록 정보 | [Caregiver.md](docs/data-models/Caregiver.md) |
+| `users` | 사용자 정보 (role 필드 포함) | [User.md](docs/data-models/User.md) |
+| `care_requests` | 간병 신청 정보 (serialNumber 포함) | [CareRequest.md](docs/data-models/CareRequest.md) |
+| `caregivers` | 간병사 등록 정보 (serialNumber 포함) | [Caregiver.md](docs/data-models/Caregiver.md) |
+| `matches` | 매칭 정보 (serialNumber 포함) | [Match.md](docs/data-models/Match.md) |
+| `counters` | SerialNumber 카운터 | - |
+
+### SerialNumber 시스템
+
+사람이 읽기 쉬운 일련번호 체계를 사용합니다:
+
+- **간병 신청**: `100-0000-0001` (10000000001부터 시작)
+- **간병사**: `200-0000-0001` (20000000001부터 시작)
+- **매칭**: `300-0000-0001` (30000000001부터 시작)
+
+Firestore Transaction을 사용하여 중복 없이 일련번호를 생성합니다.
 
 ## 🎯 로드맵
 
 ### ✅ 완료된 기능
 - [x] Firebase Authentication 연동
 - [x] 로그인/회원가입 화면
+- [x] 역할 기반 접근 제어 (보호자/간병사/관리자)
 - [x] 역할 선택 화면
-- [x] 간병 신청 화면
-- [x] 간병사 등록 화면
+- [x] 간병 신청 화면 (3단계 프로세스)
+- [x] 간병 신청 내역 조회
+- [x] 간병사 등록 화면 (프로필 사진, 다중 선택)
 - [x] 프로필 화면 (로그아웃, 회원 탈퇴)
+- [x] **관리자 시스템**
+  - [x] 관리자 대시보드
+  - [x] 간병 신청 관리 (전체 조회, 상태별 필터링)
+  - [x] 간병사 관리 (전체 조회, 다중 필터링)
+  - [x] 매칭 관리 (3단계 프로세스, 자동 상태 업데이트)
+- [x] **SerialNumber 시스템** (일련번호 자동 생성)
+- [x] Room Database (최근 환자 빠른 선택)
 - [x] Soft Delete 구현
 - [x] MVVM 아키텍처 적용
 - [x] Koin DI 적용
 
-### 🚧 진행 중
-- [ ] 웹 플랫폼 개발 (React + Vite)
-- [ ] 관리자 대시보드
-
 ### 📋 계획 중
-- [ ] 간병 신청 내역 조회
-- [ ] 간병사 목록 조회
-- [ ] 매칭 시스템
-- [ ] 푸시 알림
+- [ ] 사용자 매칭 내역 조회 (보호자/간병사)
+- [ ] 푸시 알림 (Firebase Cloud Messaging)
 - [ ] 리뷰 및 평점 시스템
+- [ ] 웹 플랫폼 개발 (React + Vite)
+- [ ] 자동 매칭 알고리즘
 
 ## 🤝 기여하기
 
