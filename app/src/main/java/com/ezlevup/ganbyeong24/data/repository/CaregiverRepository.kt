@@ -15,4 +15,11 @@ interface CaregiverRepository {
      * @return Result<String> 성공 시 문서 ID, 실패 시 에러
      */
     suspend fun saveCaregiver(caregiver: Caregiver): Result<String>
+
+    /**
+     * 모든 간병사 목록을 조회합니다. (관리자 전용)
+     *
+     * @return Result<List<Caregiver>> 성공 시 전체 간병사 목록, 실패 시 에러
+     */
+    suspend fun getAllCaregivers(): Result<List<Caregiver>>
 }

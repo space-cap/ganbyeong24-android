@@ -14,6 +14,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ezlevup.ganbyeong24.data.repository.AuthRepository
 import com.ezlevup.ganbyeong24.presentation.screens.admin.AdminDashboardScreen
+import com.ezlevup.ganbyeong24.presentation.screens.admin.care_request.AdminCareRequestListScreen
+import com.ezlevup.ganbyeong24.presentation.screens.admin.caregiver.AdminCaregiverListScreen
 import com.ezlevup.ganbyeong24.presentation.screens.auth.LoginScreen
 import com.ezlevup.ganbyeong24.presentation.screens.auth.SignupScreen
 import com.ezlevup.ganbyeong24.presentation.screens.care_request.CareRequestScreen
@@ -110,12 +112,22 @@ fun GanbyeongNavGraph(
             AdminDashboardScreen(
                     onNavigateBack = { navController.popBackStack() },
                     onNavigateToCareRequests = {
-                        // TODO: 관리자용 간병 신청 목록 화면으로 이동
+                        navController.navigate(Screen.AdminCareRequestList.route)
                     },
                     onNavigateToCaregivers = {
-                        // TODO: 관리자용 간병사 목록 화면으로 이동
+                        navController.navigate(Screen.AdminCaregiverList.route)
                     }
             )
+        }
+
+        // 관리자용 간병 신청 목록 화면
+        composable(Screen.AdminCareRequestList.route) {
+            AdminCareRequestListScreen(onNavigateBack = { navController.popBackStack() })
+        }
+
+        // 관리자용 간볕사 목록 화면
+        composable(Screen.AdminCaregiverList.route) {
+            AdminCaregiverListScreen(onNavigateBack = { navController.popBackStack() })
         }
 
         // 간병 신청 화면

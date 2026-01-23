@@ -33,6 +33,12 @@ sealed class Screen(val route: String) {
     /** 관리자 대시보드 화면 관리자 전용 메뉴 화면 */
     object AdminDashboard : Screen("admin_dashboard")
 
+    /** 관리자용 간병 신청 목록 화면 모든 간병 신청 관리 */
+    object AdminCareRequestList : Screen("admin_care_request_list")
+
+    /** 관리자용 간병사 목록 화면 모든 간병사 관리 */
+    object AdminCaregiverList : Screen("admin_caregiver_list")
+
     /**
      * 결과 화면 신청 또는 등록 완료 후 표시되는 화면
      *

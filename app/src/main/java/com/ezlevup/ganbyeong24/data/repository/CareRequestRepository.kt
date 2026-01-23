@@ -23,4 +23,11 @@ interface CareRequestRepository {
      * @return Result<List<CareRequest>> 성공 시 신청 목록, 실패 시 에러
      */
     suspend fun getCareRequestsByUserId(userId: String): Result<List<CareRequest>>
+
+    /**
+     * 모든 간병 신청 목록을 조회합니다. (관리자 전용)
+     *
+     * @return Result<List<CareRequest>> 성공 시 전체 신청 목록, 실패 시 에러
+     */
+    suspend fun getAllCareRequests(): Result<List<CareRequest>>
 }

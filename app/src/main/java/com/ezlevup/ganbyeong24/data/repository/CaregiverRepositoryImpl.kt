@@ -35,4 +35,32 @@ class CaregiverRepositoryImpl(private val firestore: FirebaseFirestore) : Caregi
             Result.failure(e)
         }
     }
+
+    /**
+     * 모든 간병사 목록을 조회합니다. (관리자 전용)
+     *
+     * @return Result<List<Caregiver>> 성공 시 전체 간병사 목록, 실패 시 에러
+     */
+    override suspend fun getAllCaregivers(): Result<List<Caregiver>> {
+        return try {
+            val snapshot =
+                    firestore
+                            .collection(COLLECTION_NAME)
+                            .orderBy(
+                                    "createdAt",
+                                    com.google.firebase.firestore.Query.Direction.DESCENDING
+                            )
+                            .get()
+                            .await()
+
+            val caregivers =
+                    snapshot.documents.mapNotNull { doc ->
+                        doc.toObject(Caregiver::class.java)?.copy(id = doc.id)
+                    }
+
+            Result.success(caregivers)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

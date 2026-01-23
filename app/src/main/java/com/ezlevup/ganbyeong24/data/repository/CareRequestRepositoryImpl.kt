@@ -65,4 +65,32 @@ class CareRequestRepositoryImpl(private val firestore: FirebaseFirestore) : Care
             Result.failure(e)
         }
     }
+
+    /**
+     * 모든 간병 신청 목록을 조회합니다. (관리자 전용)
+     *
+     * @return Result<List<CareRequest>> 성공 시 전체 신청 목록, 실패 시 에러
+     */
+    override suspend fun getAllCareRequests(): Result<List<CareRequest>> {
+        return try {
+            val snapshot =
+                    firestore
+                            .collection(COLLECTION_NAME)
+                            .orderBy(
+                                    "createdAt",
+                                    com.google.firebase.firestore.Query.Direction.DESCENDING
+                            )
+                            .get()
+                            .await()
+
+            val careRequests =
+                    snapshot.documents.mapNotNull { doc ->
+                        doc.toObject(CareRequest::class.java)?.copy(id = doc.id)
+                    }
+
+            Result.success(careRequests)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }
