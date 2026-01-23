@@ -32,4 +32,12 @@ interface UserRepository {
      * @return Result<Unit> 성공 또는 실패
      */
     suspend fun softDeleteUser(userId: String): Result<Unit>
+
+    /**
+     * 사용자가 관리자인지 확인합니다.
+     *
+     * @param userId Firebase Authentication UID
+     * @return Result<Boolean> 성공 시 관리자 여부, 실패 시 에러
+     */
+    suspend fun isAdmin(userId: String): Result<Boolean>
 }

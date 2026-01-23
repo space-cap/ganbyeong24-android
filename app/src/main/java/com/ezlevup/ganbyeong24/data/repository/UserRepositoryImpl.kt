@@ -78,4 +78,19 @@ class UserRepositoryImpl(private val firestore: FirebaseFirestore) : UserReposit
             Result.failure(e)
         }
     }
+
+    /**
+     * 사용자가 관리자인지 확인합니다.
+     *
+     * @param userId Firebase Authentication UID
+     * @return Result<Boolean> 성공 시 관리자 여부, 실패 시 에러
+     */
+    override suspend fun isAdmin(userId: String): Result<Boolean> {
+        return try {
+            val user = getUser(userId).getOrThrow()
+            Result.success(user.role == "admin")
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

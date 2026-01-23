@@ -21,17 +21,22 @@ import com.ezlevup.ganbyeong24.presentation.theme.GanbyeongTheme
  *
  * 사용자가 보호자 또는 간병사 역할을 선택할 수 있는 화면입니다.
  *
+ * @param isAdmin 관리자 여부
  * @param onGuardianSelected 보호자 선택 시 호출되는 콜백
  * @param onCaregiverSelected 간병사 선택 시 호출되는 콜백
  * @param onNavigateToProfile 프로필/설정 화면으로 이동하는 콜백
+ * @param onViewMyRequests 내 신청 내역 화면으로 이동하는 콜백
+ * @param onNavigateToAdminDashboard 관리자 대시보드로 이동하는 콜백
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RoleSelectionScreen(
+        isAdmin: Boolean = false,
         onGuardianSelected: () -> Unit,
         onCaregiverSelected: () -> Unit,
         onNavigateToProfile: () -> Unit = {},
-        onViewMyRequests: () -> Unit = {}
+        onViewMyRequests: () -> Unit = {},
+        onNavigateToAdminDashboard: () -> Unit = {}
 ) {
         Scaffold(
                 topBar = {
@@ -92,6 +97,20 @@ fun RoleSelectionScreen(
                                 onClick = onViewMyRequests,
                                 modifier = Modifier.fillMaxWidth()
                         ) { Text("내 신청 내역 보기") }
+
+                        // 관리자 메뉴 버튼 (관리자만 표시)
+                        if (isAdmin) {
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Button(
+                                        onClick = onNavigateToAdminDashboard,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        colors =
+                                                ButtonDefaults.buttonColors(
+                                                        containerColor =
+                                                                MaterialTheme.colorScheme.secondary
+                                                )
+                                ) { Text("관리자 메뉴") }
+                        }
                 }
         }
 }

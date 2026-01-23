@@ -13,6 +13,7 @@ users/{userId}
 |--------|------|------|------|------|
 | `userId` | string | ✅ | Firebase Auth UID | "bBSZfTWfWROoOnngD5DV9S2s4tK2" |
 | `email` | string | ✅ | 사용자 이메일 | "user@example.com" |
+| `role` | string | ✅ | 사용자 역할 | "user" 또는 "admin" |
 | `createdAt` | Timestamp | ✅ | 계정 생성 일시 | 2026-01-17 19:00:00 |
 | `isDeleted` | boolean | ✅ | 삭제 여부 (Soft Delete) | false |
 | `deletedAt` | Timestamp | ❌ | 삭제 일시 | null 또는 Timestamp |
@@ -25,6 +26,7 @@ import { Timestamp } from 'firebase/firestore';
 interface User {
   userId: string;
   email: string;
+  role: string;  // "user" | "admin"
   createdAt: Timestamp;
   isDeleted: boolean;
   deletedAt: Timestamp | null;
@@ -39,6 +41,7 @@ import com.google.firebase.Timestamp
 data class User(
     val userId: String = "",
     val email: String = "",
+    val role: String = "user",
     val createdAt: Timestamp = Timestamp.now(),
     val isDeleted: Boolean = false,
     val deletedAt: Timestamp? = null
@@ -52,6 +55,7 @@ data class User(
 {
   "userId": "bBSZfTWfWROoOnngD5DV9S2s4tK2",
   "email": "user@example.com",
+  "role": "user",
   "createdAt": {
     "_seconds": 1737115200,
     "_nanoseconds": 0
@@ -75,6 +79,21 @@ data class User(
     "_seconds": 1737201600,
     "_nanoseconds": 0
   }
+}
+```
+
+### 관리자
+```json
+{
+  "userId": "adminUserId123",
+  "email": "admin@example.com",
+  "role": "admin",
+  "createdAt": {
+    "_seconds": 1737115200,
+    "_nanoseconds": 0
+  },
+  "isDeleted": false,
+  "deletedAt": null
 }
 ```
 
@@ -167,6 +186,19 @@ if (userSnap.exists()) {
 2. **회원가입 시 자동 생성**: 회원가입 성공 시 자동으로 User 문서를 생성해야 합니다.
 3. **Hard Delete 금지**: 사용자 데이터는 절대 물리적으로 삭제하지 않습니다 (Soft Delete만 사용).
 4. **Firebase Auth 삭제**: 회원 탈퇴 시 Firebase Auth 계정은 삭제하여 로그인을 차단합니다.
+5. **role 필드**: 기본값은 `"user"`, 관리자는 Firebase Console에서 수동으로 `"admin"`으로 설정합니다.
+
+## 🔐 관리자 권한 부여 방법
+
+1. [Firebase Console](https://console.firebase.google.com/) 접속
+2. Ganbyeong24 프로젝트 선택
+3. **Firestore Database** → `users` 컨렉션
+4. 해당 사용자 문서 선택
+5. **필드 추가** 또는 **편집**:
+   - 필드 이름: `role`
+   - 필드 타입: `string`
+   - 값: `admin`
+6. 저장
 
 ## 🔄 생명주기
 

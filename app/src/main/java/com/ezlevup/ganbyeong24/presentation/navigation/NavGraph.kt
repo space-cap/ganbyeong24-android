@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ezlevup.ganbyeong24.data.repository.AuthRepository
+import com.ezlevup.ganbyeong24.presentation.screens.admin.AdminDashboardScreen
 import com.ezlevup.ganbyeong24.presentation.screens.auth.LoginScreen
 import com.ezlevup.ganbyeong24.presentation.screens.auth.SignupScreen
 import com.ezlevup.ganbyeong24.presentation.screens.care_request.CareRequestScreen
@@ -20,8 +21,10 @@ import com.ezlevup.ganbyeong24.presentation.screens.care_request_list.CareReques
 import com.ezlevup.ganbyeong24.presentation.screens.caregiver.CaregiverRegistrationScreen
 import com.ezlevup.ganbyeong24.presentation.screens.result.ResultScreen
 import com.ezlevup.ganbyeong24.presentation.screens.role.RoleSelectionScreen
+import com.ezlevup.ganbyeong24.presentation.screens.role.RoleSelectionViewModel
 import com.ezlevup.ganbyeong24.presentation.screens.splash.SplashScreen
 import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 /**
@@ -82,13 +85,36 @@ fun GanbyeongNavGraph(
 
         // 역할 선택 화면
         composable(Screen.RoleSelection.route) {
-            RoleSelectionScreen(
-                    onGuardianSelected = { navController.navigate(Screen.CareRequest.route) },
-                    onCaregiverSelected = {
-                        navController.navigate(Screen.CaregiverRegistration.route)
+            val viewModel: RoleSelectionViewModel = koinViewModel()
+            val isAdmin by viewModel.isAdmin.collectAsState()
+            val isLoading by viewModel.isLoading.collectAsState()
+
+            if (!isLoading) {
+                RoleSelectionScreen(
+                        isAdmin = isAdmin,
+                        onGuardianSelected = { navController.navigate(Screen.CareRequest.route) },
+                        onCaregiverSelected = {
+                            navController.navigate(Screen.CaregiverRegistration.route)
+                        },
+                        onNavigateToProfile = { navController.navigate(Screen.Profile.route) },
+                        onViewMyRequests = { navController.navigate(Screen.CareRequestList.route) },
+                        onNavigateToAdminDashboard = {
+                            navController.navigate(Screen.AdminDashboard.route)
+                        }
+                )
+            }
+        }
+
+        // 관리자 대시보드 화면
+        composable(Screen.AdminDashboard.route) {
+            AdminDashboardScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToCareRequests = {
+                        // TODO: 관리자용 간병 신청 목록 화면으로 이동
                     },
-                    onNavigateToProfile = { navController.navigate(Screen.Profile.route) },
-                    onViewMyRequests = { navController.navigate(Screen.CareRequestList.route) }
+                    onNavigateToCaregivers = {
+                        // TODO: 관리자용 간병사 목록 화면으로 이동
+                    }
             )
         }
 

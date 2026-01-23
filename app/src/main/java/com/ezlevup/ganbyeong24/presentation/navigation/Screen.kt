@@ -30,6 +30,9 @@ sealed class Screen(val route: String) {
     /** 프로필/설정 화면 사용자 정보 확인 및 설정 화면 */
     object Profile : Screen("profile")
 
+    /** 관리자 대시보드 화면 관리자 전용 메뉴 화면 */
+    object AdminDashboard : Screen("admin_dashboard")
+
     /**
      * 결과 화면 신청 또는 등록 완료 후 표시되는 화면
      *

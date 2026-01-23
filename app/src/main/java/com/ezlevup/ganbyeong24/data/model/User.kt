@@ -10,6 +10,7 @@ import com.google.firebase.Timestamp
  *
  * @property userId Firebase Authentication UID
  * @property email 사용자 이메일
+ * @property role 사용자 역할 ("user" 또는 "admin", 기본값: "user")
  * @property createdAt 계정 생성 일시
  * @property isDeleted 삭제 여부 (Soft Delete)
  * @property deletedAt 삭제 일시 (탈퇴한 경우에만 값이 있음)
@@ -17,6 +18,7 @@ import com.google.firebase.Timestamp
 data class User(
         val userId: String = "",
         val email: String = "",
+        val role: String = "user",
         val createdAt: Timestamp = Timestamp.now(),
         val isDeleted: Boolean = false,
         val deletedAt: Timestamp? = null

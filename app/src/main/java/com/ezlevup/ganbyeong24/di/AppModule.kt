@@ -16,6 +16,7 @@ import com.ezlevup.ganbyeong24.presentation.screens.care_request.CareRequestView
 import com.ezlevup.ganbyeong24.presentation.screens.care_request_list.CareRequestListViewModel
 import com.ezlevup.ganbyeong24.presentation.screens.caregiver.CaregiverRegistrationViewModel
 import com.ezlevup.ganbyeong24.presentation.screens.profile.ProfileViewModel
+import com.ezlevup.ganbyeong24.presentation.screens.role.RoleSelectionViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import org.koin.android.ext.koin.androidContext
@@ -47,6 +48,7 @@ val appModule = module {
     // ViewModel
     viewModel { LoginViewModel(get(), get()) }
     viewModel { SignupViewModel(get(), get()) }
+    viewModel { RoleSelectionViewModel(get(), get()) }
     viewModel { CareRequestViewModel(get(), get(), get()) }
     viewModel { CareRequestListViewModel(get(), get()) }
     viewModel { CaregiverRegistrationViewModel(get(), get()) }
