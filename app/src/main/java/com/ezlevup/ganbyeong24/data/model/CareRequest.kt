@@ -1,6 +1,7 @@
 package com.ezlevup.ganbyeong24.data.model
 
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.Exclude
 
 /**
  * 간병 신청 데이터 모델
@@ -8,6 +9,7 @@ import com.google.firebase.Timestamp
  * Firestore에 저장되는 간병 신청 정보를 나타냅니다.
  *
  * @property id Firestore 문서 ID
+ * @property serialNumber 간병 신청 일련번호 (사람이 읽기 쉬운 번호)
  * @property userId 사용자 ID (Firebase Auth)
  * @property patientName 환자명
  * @property guardianName 보호자명
@@ -22,7 +24,8 @@ import com.google.firebase.Timestamp
  * @property createdAt 생성 시간
  */
 data class CareRequest(
-        val id: String = "",
+        @get:Exclude val id: String = "",
+        val serialNumber: Int = 0,
         val userId: String = "",
         val patientName: String = "",
         val patientAge: Int = 0,

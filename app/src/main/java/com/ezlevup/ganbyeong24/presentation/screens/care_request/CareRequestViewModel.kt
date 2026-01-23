@@ -161,8 +161,18 @@ class CareRequestViewModel(
 
             val userId = authRepository.getCurrentUserId() ?: throw Exception("로그인이 필요합니다")
 
+            // 일련번호 생성
+            val serialNumber =
+                    repository.generateSerialNumber().getOrElse {
+                        _state.update {
+                            it.copy(isLoading = false, errorMessage = "일련번호 생성 실패: ${it.message}")
+                        }
+                        return@launch
+                    }
+
             val request =
                     CareRequest(
+                            serialNumber = serialNumber,
                             userId = userId,
                             patientName = _state.value.patientName,
                             patientAge = _state.value.patientAge.toIntOrNull() ?: 0,

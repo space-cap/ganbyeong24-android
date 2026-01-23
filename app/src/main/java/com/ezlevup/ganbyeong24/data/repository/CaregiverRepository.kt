@@ -22,4 +22,11 @@ interface CaregiverRepository {
      * @return Result<List<Caregiver>> 성공 시 전체 간병사 목록, 실패 시 에러
      */
     suspend fun getAllCaregivers(): Result<List<Caregiver>>
+
+    /**
+     * 간병사 일련번호를 생성합니다.
+     *
+     * @return Result<Int> 성공 시 새로운 일련번호, 실패 시 에러
+     */
+    suspend fun generateSerialNumber(): Result<Int>
 }

@@ -30,4 +30,11 @@ interface CareRequestRepository {
      * @return Result<List<CareRequest>> 성공 시 전체 신청 목록, 실패 시 에러
      */
     suspend fun getAllCareRequests(): Result<List<CareRequest>>
+
+    /**
+     * 간병 신청 일련번호를 생성합니다.
+     *
+     * @return Result<Int> 성공 시 새로운 일련번호, 실패 시 에러
+     */
+    suspend fun generateSerialNumber(): Result<Int>
 }
