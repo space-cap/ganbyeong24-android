@@ -295,23 +295,29 @@ fun CaregiverItem(caregiver: Caregiver) {
 /** 프로필 이미지 */
 @Composable
 fun ProfileImage(photoBase64: String?, modifier: Modifier = Modifier) {
-    if (photoBase64 != null && photoBase64.isNotEmpty()) {
-        try {
-            val imageBytes = Base64.decode(photoBase64, Base64.DEFAULT)
-            val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-            if (bitmap != null) {
-                Image(
-                        bitmap = bitmap.asImageBitmap(),
-                        contentDescription = "프로필 사진",
-                        modifier = modifier.clip(CircleShape),
-                        contentScale = ContentScale.Crop
-                )
-            } else {
-                DefaultProfileIcon(modifier)
+    // Base64 디코딩을 remember로 캐싱
+    val bitmap =
+            remember(photoBase64) {
+                if (photoBase64 != null && photoBase64.isNotEmpty()) {
+                    try {
+                        val imageBytes = Base64.decode(photoBase64, Base64.DEFAULT)
+                        BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                    } catch (e: Exception) {
+                        null
+                    }
+                } else {
+                    null
+                }
             }
-        } catch (e: Exception) {
-            DefaultProfileIcon(modifier)
-        }
+
+    // 디코딩 결과에 따라 UI 표시
+    if (bitmap != null) {
+        Image(
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = "프로필 사진",
+                modifier = modifier.clip(CircleShape),
+                contentScale = ContentScale.Crop
+        )
     } else {
         DefaultProfileIcon(modifier)
     }

@@ -55,7 +55,16 @@ class CaregiverRepositoryImpl(private val firestore: FirebaseFirestore) : Caregi
 
             val caregivers =
                     snapshot.documents.mapNotNull { doc ->
-                        doc.toObject(Caregiver::class.java)?.copy(id = doc.id)
+                        try {
+                            doc.toObject(Caregiver::class.java)?.copy(id = doc.id)
+                        } catch (e: Exception) {
+                            // 역직렬화 오류 발생 시 해당 문서 건너뛰기
+                            android.util.Log.e(
+                                    "CaregiverRepository",
+                                    "Failed to deserialize caregiver ${doc.id}: ${e.message}"
+                            )
+                            null
+                        }
                     }
 
             Result.success(caregivers)
