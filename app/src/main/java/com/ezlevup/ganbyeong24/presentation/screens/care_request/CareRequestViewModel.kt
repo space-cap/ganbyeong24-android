@@ -165,7 +165,7 @@ class CareRequestViewModel(
             val serialNumber =
                     repository.generateSerialNumber().getOrElse {
                         _state.update {
-                            it.copy(isLoading = false, errorMessage = "일련번호 생성 실패: ${it.message}")
+                            it.copy(isLoading = false, errorMessage = "일련번호 생성 실패: ${it.errorMessage}")
                         }
                         return@launch
                     }

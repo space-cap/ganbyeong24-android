@@ -34,7 +34,7 @@ interface CareRequestRepository {
     /**
      * 간병 신청 일련번호를 생성합니다.
      *
-     * @return Result<Int> 성공 시 새로운 일련번호, 실패 시 에러
+     * @return Result<Long> 성공 시 새로운 일련번호, 실패 시 에러
      */
-    suspend fun generateSerialNumber(): Result<Int>
+    suspend fun generateSerialNumber(): Result<Long>
 }

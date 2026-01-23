@@ -97,9 +97,9 @@ class CareRequestRepositoryImpl(private val firestore: FirebaseFirestore) : Care
     /**
      * 간병 신청 일련번호를 생성합니다. Firestore Transaction을 사용하여 중복 없이 순차적으로 번호를 생성합니다.
      *
-     * @return Result<Int> 성공 시 새로운 일련번호, 실패 시 에러
+     * @return Result<Long> 성공 시 새로운 일련번호, 실패 시 에러
      */
-    override suspend fun generateSerialNumber(): Result<Int> {
+    override suspend fun generateSerialNumber(): Result<Long> {
         return try {
             val counterRef = firestore.collection("counters").document("care_request_counter")
 
@@ -108,15 +108,15 @@ class CareRequestRepositoryImpl(private val firestore: FirebaseFirestore) : Care
                             .runTransaction { transaction ->
                                 val snapshot = transaction.get(counterRef)
 
-                                // 문서가 없으면 생성 (시작 번호: 1000)
+                                // 문서가 없으면 생성 (시작 번호: 10000000000)
                                 if (!snapshot.exists()) {
-                                    transaction.set(counterRef, mapOf("value" to 1000))
-                                    1001
+                                    transaction.set(counterRef, mapOf("value" to 10000000000L))
+                                    10000000001L
                                 } else {
-                                    val currentValue = snapshot.getLong("value") ?: 1000
+                                    val currentValue = snapshot.getLong("value") ?: 10000000000L
                                     val newValue = currentValue + 1
                                     transaction.update(counterRef, "value", newValue)
-                                    newValue.toInt()
+                                    newValue
                                 }
                             }
                             .await()

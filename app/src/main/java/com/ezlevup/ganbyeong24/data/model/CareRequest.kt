@@ -25,7 +25,7 @@ import com.google.firebase.firestore.Exclude
  */
 data class CareRequest(
         @get:Exclude val id: String = "",
-        val serialNumber: Int = 0,
+        val serialNumber: Long = 0,
         val userId: String = "",
         val patientName: String = "",
         val patientAge: Int = 0,

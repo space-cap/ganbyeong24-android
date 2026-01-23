@@ -23,7 +23,7 @@ import com.google.firebase.firestore.Exclude
  */
 data class Caregiver(
         @get:Exclude val id: String = "",
-        val serialNumber: Int = 0,
+        val serialNumber: Long = 0,
         val userId: String = "",
         val name: String = "",
         val gender: String = "",
