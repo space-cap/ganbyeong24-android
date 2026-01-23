@@ -7,6 +7,8 @@ import com.ezlevup.ganbyeong24.data.repository.CareRequestRepository
 import com.ezlevup.ganbyeong24.data.repository.CareRequestRepositoryImpl
 import com.ezlevup.ganbyeong24.data.repository.CaregiverRepository
 import com.ezlevup.ganbyeong24.data.repository.CaregiverRepositoryImpl
+import com.ezlevup.ganbyeong24.data.repository.MatchRepository
+import com.ezlevup.ganbyeong24.data.repository.MatchRepositoryImpl
 import com.ezlevup.ganbyeong24.data.repository.RecentPatientRepository
 import com.ezlevup.ganbyeong24.data.repository.UserRepository
 import com.ezlevup.ganbyeong24.data.repository.UserRepositoryImpl
@@ -45,6 +47,7 @@ val appModule = module {
     single<UserRepository> { UserRepositoryImpl(get()) }
     single<CareRequestRepository> { CareRequestRepositoryImpl(get()) }
     single<CaregiverRepository> { CaregiverRepositoryImpl(get()) }
+    single<MatchRepository> { MatchRepositoryImpl(get()) }
     single { RecentPatientRepository(get()) }
 
     // ViewModel

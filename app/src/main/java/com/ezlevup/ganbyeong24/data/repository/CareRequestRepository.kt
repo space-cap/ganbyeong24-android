@@ -37,4 +37,13 @@ interface CareRequestRepository {
      * @return Result<Long> 성공 시 새로운 일련번호, 실패 시 에러
      */
     suspend fun generateSerialNumber(): Result<Long>
+
+    /**
+     * 간병 신청 상태를 업데이트합니다.
+     *
+     * @param requestId 간병 신청 문서 ID
+     * @param status 새로운 상태
+     * @return Result<Unit> 성공 시 Unit, 실패 시 에러
+     */
+    suspend fun updateCareRequestStatus(requestId: String, status: String): Result<Unit>
 }

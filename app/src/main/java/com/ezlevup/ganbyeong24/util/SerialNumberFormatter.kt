@@ -44,4 +44,14 @@ object SerialNumberFormatter {
     fun formatCaregiver(serialNumber: Long): String {
         return "간병사 #${format(serialNumber)}"
     }
+
+    /**
+     * 매칭 일련번호를 포맷팅합니다.
+     *
+     * @param serialNumber 일련번호
+     * @return "매칭 #300-0000-0001"
+     */
+    fun formatMatch(serialNumber: Long): String {
+        return "매칭 #${format(serialNumber)}"
+    }
 }

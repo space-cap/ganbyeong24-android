@@ -126,4 +126,24 @@ class CareRequestRepositoryImpl(private val firestore: FirebaseFirestore) : Care
             Result.failure(e)
         }
     }
+
+    /**
+     * 간병 신청 상태를 업데이트합니다.
+     *
+     * @param requestId 간병 신청 문서 ID
+     * @param status 새로운 상태
+     * @return Result<Unit> 성공 시 Unit, 실패 시 에러
+     */
+    override suspend fun updateCareRequestStatus(requestId: String, status: String): Result<Unit> {
+        return try {
+            firestore
+                    .collection(COLLECTION_NAME)
+                    .document(requestId)
+                    .update("status", status)
+                    .await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }
