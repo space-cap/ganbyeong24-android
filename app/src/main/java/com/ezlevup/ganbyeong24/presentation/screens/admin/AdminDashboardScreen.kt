@@ -83,7 +83,16 @@ fun AdminDashboardScreen(
                                 icon = Icons.Default.Person,
                                 text = "간병사 관리",
                                 description = "등록된 간병사 목록 확인 및 관리",
-                                onClick = onNavigateToCaregivers
+                                onClick = onNavigateToCaregivers,
+                                modifier = Modifier.padding(bottom = 16.dp)
+                        )
+
+                        // 매칭 관리 버튼
+                        AdminMenuButton(
+                                icon = Icons.Default.List,
+                                text = "매칭 관리",
+                                description = "간병 신청과 간병사 매칭",
+                                onClick = onNavigateToMatches
                         )
                 }
         }

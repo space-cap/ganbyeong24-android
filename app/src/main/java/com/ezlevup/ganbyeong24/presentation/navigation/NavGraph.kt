@@ -117,7 +117,8 @@ fun GanbyeongNavGraph(
                     },
                     onNavigateToCaregivers = {
                         navController.navigate(Screen.AdminCaregiverList.route)
-                    }
+                    },
+                    onNavigateToMatches = { navController.navigate(Screen.MatchManagement.route) }
             )
         }
 
