@@ -9,7 +9,8 @@ care_requests/{documentId}
 
 | 필드명 | 타입 | 필수 | 설명 | 예시 |
 |--------|------|------|------|------|
-| `id` | string | ✅ | 문서 ID (자동 생성) | "abc123..." |
+| `id` | string | ✅ | 문서 ID (자동 생성, @Exclude) | "abc123..." |
+| `serialNumber` | number | ✅ | 일련번호 (사람이 읽기 쉬운) | 10000000001 |
 | `userId` | string | ✅ | 신청자 UID (Firebase Auth) | "bBSZfTWfWROoOnngD5DV9S2s4tK2" |
 | `patientName` | string | ✅ | 환자 이름 | "김철수" |
 | `patientAge` | number | ✅ | 환자 나이 | 75 |
@@ -21,42 +22,19 @@ care_requests/{documentId}
 | `location` | string | ✅ | 병원 위치 | "서울대학교병원 본관 501호" |
 | `patientPhoneNumber` | string | ❌ | 환자 연락처 (선택) | "010-1111-2222" |
 | `guardianPhoneNumber` | string | ✅ | 보호자 연락처 | "010-1234-5678" |
+| `caregiverPhotoBase64` | string | ❌ | 간병사 사진 Base64 (선택) | "data:image/jpeg;base64,..." |
 | `status` | string | ✅ | 신청 상태 | "pending" (기본값) |
 | `createdAt` | Timestamp | ✅ | 생성 일시 | 2026-01-17 19:00:00 |
-
-## 💻 TypeScript 타입 정의
-
-```typescript
-import { Timestamp } from 'firebase/firestore';
-
-interface CareRequest {
-  id: string;
-  userId: string;
-  patientName: string;
-  patientAge: number;
-  patientGender: string;  // "남성" | "여성"
-  guardianName: string;
-  patientCondition: string;
-  careStartDate: string;  // "YYYY-MM-DD" 형식
-  careEndDate: string;    // "YYYY-MM-DD" 형식
-  location: string;
-  patientPhoneNumber?: string | null;
-  guardianPhoneNumber: string;
-  status: string;  // "pending" | "confirmed" | "completed" | "cancelled"
-  createdAt: Timestamp;
-}
-
-// Firestore에서 읽을 때 (documentId는 이미 id 필드에 포함)
-type CareRequestDocument = CareRequest;
-```
 
 ## 🤖 Kotlin 데이터 클래스
 
 ```kotlin
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.Exclude
 
 data class CareRequest(
-    val id: String = "",
+    @get:Exclude val id: String = "",
+    val serialNumber: Long = 0,
     val userId: String = "",
     val patientName: String = "",
     val patientAge: Int = 0,
@@ -68,6 +46,7 @@ data class CareRequest(
     val location: String = "",
     val patientPhoneNumber: String? = null,
     val guardianPhoneNumber: String = "",
+    val caregiverPhotoBase64: String? = null,
     val status: String = "pending",
     val createdAt: Timestamp = Timestamp.now()
 )
@@ -77,7 +56,7 @@ data class CareRequest(
 
 ```json
 {
-  "id": "abc123def456",
+  "serialNumber": 10000000001,
   "userId": "bBSZfTWfWROoOnngD5DV9S2s4tK2",
   "patientName": "김철수",
   "patientAge": 75,
@@ -97,25 +76,29 @@ data class CareRequest(
 }
 ```
 
+## 📌 주요 변경사항 (2026-01-23)
+
+### serialNumber 필드 추가
+- **타입**: Long (11자리 숫자)
+- **범위**: 10000000001 ~ 19999999999
+- **화면 표시**: "100-0000-0001" 형식 (SerialNumberFormatter 사용)
+- **목적**: 사람이 읽기 쉬운 번호, Firebase Console 검색 용이
+- **생성**: Firestore Transaction으로 중복 방지
+
+### id 필드 @Exclude
+- Firestore 저장 시 제외 (`@get:Exclude`)
+- 조회 시 문서 ID를 `id` 필드에 할당
+
+## 🔄 상태 관리
+
+### status 필드 값
+- `pending`: 신청 대기 중 (기본값)
+- `matched`: 매칭 완료
+- `confirmed`: 매칭 확정
+- `completed`: 간병 완료
+- `cancelled`: 취소됨
+
 ## 🔍 쿼리 예시
-
-### TypeScript (웹)
-```typescript
-import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
-
-// 특정 사용자의 신청 목록 조회
-const q = query(
-  collection(db, 'care_requests'),
-  where('userId', '==', currentUserId),
-  orderBy('createdAt', 'desc')
-);
-
-const snapshot = await getDocs(q);
-const requests = snapshot.docs.map(doc => ({
-  ...doc.data(),
-  id: doc.id  // id는 이미 데이터에 포함되어 있지만, documentId로 덮어쓰기
-} as CareRequest));
-```
 
 ### Kotlin (앱)
 ```kotlin
@@ -125,27 +108,21 @@ firestore.collection("care_requests")
     .orderBy("createdAt", Query.Direction.DESCENDING)
     .get()
     .await()
+
+// serialNumber로 검색
+firestore.collection("care_requests")
+    .whereEqualTo("serialNumber", 10000000001)
+    .get()
+    .await()
+
+// pending 상태 신청 조회
+firestore.collection("care_requests")
+    .whereEqualTo("status", "pending")
+    .orderBy("createdAt", Query.Direction.DESCENDING)
+    .get()
+    .await()
 ```
 
-## 📌 주의사항
+---
 
-1. **날짜 형식**: `careStartDate`, `careEndDate`는 문자열 형식 ("YYYY-MM-DD")
-2. **전화번호 형식**: "010-XXXX-XXXX" 형식으로 저장
-3. **status 값**: "pending" (기본값), "confirmed", "completed", "cancelled"
-4. **patientAge**: 1-120 범위의 정수 값
-5. **patientGender**: "남성" 또는 "여성" 값만 허용
-6. **patientPhoneNumber**: 선택 필드이므로 `null` 또는 `undefined` 가능
-7. **id 필드**: Firestore 문서 ID와 동일하게 저장 (중복이지만 쿼리 편의성을 위해)
-
-## 🔄 상태 관리
-
-### status 필드 값
-- `pending`: 신청 대기 중 (기본값)
-- `confirmed`: 매칭 확정
-- `completed`: 간병 완료
-- `cancelled`: 취소됨
-
-### 향후 확장 가능 필드
-- `matchedCaregiverId`: 매칭된 간병사 ID
-- `updatedAt`: 마지막 수정 일시
-- `notes`: 관리자 메모
+**마지막 업데이트**: 2026-01-23
