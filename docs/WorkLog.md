@@ -675,4 +675,131 @@ docs/WorkLog.md 파일 확인해줘.
 
 ---
 
-**마지막 업데이트**: 2026-01-22 23:08
+**마지막 업데이트**: 2026-01-23 01:14
+
+## 📅 2026-01-23 (Day 10)
+
+### ✅ 완료한 작업
+
+#### 간병 신청 목록 화면 구현
+
+**Issue #**: (미생성)
+
+**목표**: 사용자가 자신이 신청한 간병 내역을 확인할 수 있는 목록 화면 구현
+
+**구현 내용**:
+
+1. **Data Layer**:
+   - `CareRequestRepository`에 `getCareRequestsByUserId()` 함수 추가
+   - Firestore에서 userId로 필터링하고 createdAt 내림차순 정렬
+   - Firebase 복합 인덱스 생성 (userId + createdAt)
+
+2. **Presentation Layer**:
+   - `CareRequestListState`: 로딩, 목록, 에러 상태 관리
+   - `CareRequestListViewModel`: 사용자 인증 확인 및 데이터 로드
+
+3. **UI Layer**:
+   - `CareRequestListScreen`: 완전한 목록 화면 구현
+     - 로딩 상태: CircularProgressIndicator
+     - 에러 상태: 에러 메시지 + 재시도 버튼
+     - 빈 목록: 안내 메시지
+     - 목록 표시: 카드 형태, 상태 배지
+   - 상태 배지 색상: pending(대기), matched(매칭), completed(완료), cancelled(취소)
+
+4. **Navigation**:
+   - `Screen.kt`에 `CareRequestList` 경로 추가
+   - `NavGraph.kt`에 composable 추가
+   - `RoleSelectionScreen`에 "내 신청 내역 보기" 버튼 추가
+
+5. **Dependency Injection**:
+   - Koin 모듈에 `CareRequestListViewModel` 등록
+
+**검증**:
+- ✅ Firebase 복합 인덱스 생성 완료
+- ✅ 목록 화면 정상 작동 확인
+- ✅ 모든 상태(로딩, 에러, 빈 목록, 목록 표시) 정상 작동
+
+---
+
+#### 환자 나이 및 성별 필드 추가
+
+**목표**: 간병사 매칭 정확도 향상을 위한 환자 정보 추가
+
+**구현 내용**:
+
+1. **Data Model**:
+   - `CareRequest.kt`에 `patientAge: Int`, `patientGender: String` 추가
+
+2. **State & ViewModel**:
+   - `CareRequestState`에 `patientAge`, `patientGender` 및 에러 필드 추가
+   - `CareRequestViewModel`에 입력 핸들러 추가:
+     - `onPatientAgeChange()`: 숫자만 필터링 (최대 3자리)
+     - `onPatientGenderChange()`: 성별 선택
+   - Step 1 유효성 검증 추가:
+     - 나이: 1-120 범위 검증
+     - 성별: "남성" 또는 "여성" 필수 선택
+
+3. **UI Components**:
+   - 환자 나이 입력 필드 (숫자 키패드)
+   - `GenderSelector` 컴포넌트 생성:
+     - 남성/여성 버튼
+     - 선택 시 Primary Container 색상 표시
+     - 에러 메시지 지원
+
+4. **목록 화면 업데이트**:
+   - `CareRequestListScreen`에서 나이/성별 표시 활성화
+
+5. **문서 업데이트**:
+   - `CareRequest.md` 데이터 모델 문서 업데이트
+   - 필드 구조, TypeScript/Kotlin 타입, 예시 데이터 모두 반영
+
+**설계 결정**:
+- **나이 vs 생년월일**: 나이 입력 선택
+  - 이유: 시니어 사용자 친화성, 간단한 UX, 개인정보 보호
+  - 간병사 매칭에는 대략적인 연령대만 필요
+
+### 📝 배운 것
+
+1. **Firestore 복합 인덱스**:
+   - `whereEqualTo` + `orderBy` 조합 시 복합 인덱스 필요
+   - Firebase Console에서 자동 생성 링크 제공
+   - `FAILED_PRECONDITION` 에러 발생 시 인덱스 생성 필요
+
+2. **UI 상태 관리**:
+   - 로딩, 에러, 빈 목록, 데이터 표시 4가지 상태 처리
+   - 각 상태별 적절한 UI 제공으로 사용자 경험 향상
+
+3. **성별 선택 UI**:
+   - OutlinedButton + containerColor 변경으로 선택 상태 표시
+   - Material Design 3의 색상 시스템 활용
+
+### 💡 설계 결정
+
+1. **나이 입력 방식**:
+   - 나이 직접 입력 (생년월일 대신)
+   - 장점: 빠른 입력, 시니어 친화적, 덜 민감한 개인정보
+   - 단점: 정확도 낮음 (하지만 간병사 매칭에는 충분)
+
+2. **목록 화면 정보 표시**:
+   - 환자명, 나이, 성별, 지역, 기간, 상태
+   - 카드 형태로 가독성 향상
+   - 상태 배지로 한눈에 상태 파악 가능
+
+### 📊 진행 상황
+
+**완료된 기능**:
+- ✅ 간병 신청 목록 화면 (조회, 상태 표시)
+- ✅ 환자 나이/성별 입력 및 표시
+- ✅ Firebase 복합 인덱스 설정
+
+**다음 단계**:
+- [ ] 간병사 목록 화면 구현
+- [ ] 간병사 필터링 기능
+- [ ] 매칭 시스템 구현
+
+---
+
+**파일 변경 사항**:
+- 신규: `CareRequestListState.kt`, `CareRequestListViewModel.kt`, `CareRequestListScreen.kt`
+- 수정: `CareRequest.kt`, `CareRequestState.kt`, `CareRequestViewModel.kt`, `CareRequestScreen.kt`, `CareRequestListScreen.kt`, `Screen.kt`, `NavGraph.kt`, `RoleSelectionScreen.kt`, `AppModule.kt`, `CareRequest.md`
+

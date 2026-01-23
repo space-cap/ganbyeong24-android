@@ -12,6 +12,8 @@ care_requests/{documentId}
 | `id` | string | ✅ | 문서 ID (자동 생성) | "abc123..." |
 | `userId` | string | ✅ | 신청자 UID (Firebase Auth) | "bBSZfTWfWROoOnngD5DV9S2s4tK2" |
 | `patientName` | string | ✅ | 환자 이름 | "김철수" |
+| `patientAge` | number | ✅ | 환자 나이 | 75 |
+| `patientGender` | string | ✅ | 환자 성별 | "남성" 또는 "여성" |
 | `guardianName` | string | ✅ | 보호자 이름 | "김영희" |
 | `patientCondition` | string | ✅ | 환자 상태/병명 | "뇌졸중 회복 중" |
 | `careStartDate` | string | ✅ | 간병 시작일 | "2026-01-20" |
@@ -31,6 +33,8 @@ interface CareRequest {
   id: string;
   userId: string;
   patientName: string;
+  patientAge: number;
+  patientGender: string;  // "남성" | "여성"
   guardianName: string;
   patientCondition: string;
   careStartDate: string;  // "YYYY-MM-DD" 형식
@@ -55,6 +59,8 @@ data class CareRequest(
     val id: String = "",
     val userId: String = "",
     val patientName: String = "",
+    val patientAge: Int = 0,
+    val patientGender: String = "",
     val guardianName: String = "",
     val patientCondition: String = "",
     val careStartDate: String = "",
@@ -74,6 +80,8 @@ data class CareRequest(
   "id": "abc123def456",
   "userId": "bBSZfTWfWROoOnngD5DV9S2s4tK2",
   "patientName": "김철수",
+  "patientAge": 75,
+  "patientGender": "남성",
   "guardianName": "김영희",
   "patientCondition": "뇌졸중 회복 중",
   "careStartDate": "2026-01-20",
@@ -124,8 +132,10 @@ firestore.collection("care_requests")
 1. **날짜 형식**: `careStartDate`, `careEndDate`는 문자열 형식 ("YYYY-MM-DD")
 2. **전화번호 형식**: "010-XXXX-XXXX" 형식으로 저장
 3. **status 값**: "pending" (기본값), "confirmed", "completed", "cancelled"
-4. **patientPhoneNumber**: 선택 필드이므로 `null` 또는 `undefined` 가능
-5. **id 필드**: Firestore 문서 ID와 동일하게 저장 (중복이지만 쿼리 편의성을 위해)
+4. **patientAge**: 1-120 범위의 정수 값
+5. **patientGender**: "남성" 또는 "여성" 값만 허용
+6. **patientPhoneNumber**: 선택 필드이므로 `null` 또는 `undefined` 가능
+7. **id 필드**: Firestore 문서 ID와 동일하게 저장 (중복이지만 쿼리 편의성을 위해)
 
 ## 🔄 상태 관리
 
